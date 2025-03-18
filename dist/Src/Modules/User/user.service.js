@@ -226,11 +226,11 @@ const forgetPassword = async (req, res, next) => {
     let forgetOTP = String((0, otp_1.generateOTP)());
     //hash
     userExist.otpEmail = forgetOTP;
-    userExist.expiredDateOtp = new Date(Date.now() + 10 * 1000);
+    userExist.expiredDateOtp = new Date(Date.now() + 5 * 60 * 1000);
     //update
     setTimeout(async () => {
         await Database_1.User.updateOne({ _id: userExist._id, expiredDateOtp: { $lte: Date.now() } }, { $unset: { otpEmail: "", expiredDateOtp: "" } });
-    }, 20 * 1000);
+    }, 5 * 60 * 1000);
     //save to db
     await userExist.save();
     //send email
@@ -261,7 +261,7 @@ const changePassword = async (req, res, next) => {
         let hash = await (0, encryption_1.Hash)({ key: secondForgetPassword, SALT_ROUNDS: process.env.SALT_ROUNDS });
         //add to otp
         userExist.otpEmail = hash;
-        userExist.expiredDateOtp = new Date(Date.now() + 20 * 1000);
+        userExist.expiredDateOtp = new Date(Date.now() + 5 * 60 * 1000);
         //save to db
         await userExist.save();
         //send resend email
