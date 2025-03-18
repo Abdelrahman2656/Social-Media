@@ -38,11 +38,6 @@ const signUp = async (req, res, next) => {
     }
     //crypt phone
     let cipherText = (0, encryption_1.Encrypt)({ key: phone, secretKey: process.env.SECRET_CRYPTO });
-    //hash password
-    password = await (0, encryption_1.Hash)({
-        key: password,
-        SALT_ROUNDS: process.env.SALT_ROUNDS,
-    });
     //create user
     const user = new Database_1.User({
         firstName,

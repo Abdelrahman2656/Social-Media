@@ -48,11 +48,7 @@ export const signUp = async (
   //crypt phone
   
 let cipherText=Encrypt({key :phone,secretKey:process.env.SECRET_CRYPTO }) 
-  //hash password
-  password = await Hash({
-    key: password,
-    SALT_ROUNDS: process.env.SALT_ROUNDS,
-  });
+
   
   //create user
   const user = new User({
