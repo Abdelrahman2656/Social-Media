@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 })
 await transporter.sendMail({
     to,
-    from: `"Social-Media-App@Support.com`,
+    from:`"Smart Choice Account" <${process.env.USER_SENDER}>`,
     subject,
     html,
     attachments

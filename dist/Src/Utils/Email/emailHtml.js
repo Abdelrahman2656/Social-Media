@@ -105,11 +105,11 @@ const emailHtml = (otp, recipientName = "User") => {
                 letter-spacing: 0.56px;
               "
             >
-              Thank you for choosing Smart Choice Company. Use the following OTP
+              Thank you for choosing Social Media Company. Use the following OTP
               to complete the procedure to change your email address. OTP is
               valid for
               <span style="font-weight: 600; color: #1f1f1f;">5 minutes</span>.
-              Do not share this code with others, including Smart Choice
+              Do not share this code with others, including Social Media
               employees.
             </p>
             <p
@@ -171,7 +171,7 @@ const emailHtml = (otp, recipientName = "User") => {
             color: #434343;
           "
         >
-          Smart Choice Company
+          Social Media Company
         </p>
         <p style="margin: 0; margin-top: 8px; color: #434343;">
           Address 540, City, State.
