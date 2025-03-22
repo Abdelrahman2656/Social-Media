@@ -22,12 +22,14 @@ const isAuthentication = () => {
             if (typeof payload === "string" || "message" in payload) {
                 return next(new AppError_1.AppError(payload.message, 401));
             }
+            console.log("Decoded Payload:", payload); // ✅ للتحقق من محتوى التوكن
             //userExist 
             let authUser = await Database_1.User.findOne({ _id: payload._id, isConfirmed: true });
             if (!authUser) {
                 return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
             }
             req.authUser = authUser;
+            next();
         }
         catch (error) {
             return next(new AppError_1.AppError("Authentication failed", 500));

@@ -27,12 +27,16 @@ let token = authorization.split(' ')[1]
   if (typeof payload === "string" || "message" in payload) {
     return next(new AppError((payload as { message: string }).message, 401));
   }
+  console.log("Decoded Payload:", payload); // ✅ للتحقق من محتوى التوكن
   //userExist 
   let authUser = await User.findOne({_id:payload._id,isConfirmed:true})
   if(!authUser){
     return next(new AppError(messages.user.notFound,404))
   }
   req.authUser = authUser
+  next(
+    
+  )
        }catch(error){
         return next(new AppError("Authentication failed", 500));
        }

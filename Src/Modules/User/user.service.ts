@@ -186,8 +186,8 @@ if(!userExist){
     .json({
       message: messages.user.loginSuccessfully,
       success: true,
-      accessToken,
-      refreshToken,
+      access_token:accessToken,
+      refresh_token:refreshToken,
     });
 };
 
