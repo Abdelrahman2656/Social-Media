@@ -4,7 +4,7 @@ import { Application } from "express";
 import path from "path";
 import { dbconnection } from "../Database/dbconnection";
 import { globalErrorHandling } from "./Middleware/asyncHandler";
-import { userRouter } from "./Modules";
+import { postRouter, userRouter } from "./Modules";
 export const bootstrap = (
   app: Application,
   express: typeof import("express")
@@ -18,9 +18,11 @@ export const bootstrap = (
  }));
  //-----------------------------------------------DataBase Connection------------------------------------------------------------
  dbconnection();
+
  //----------------------------------------------- Use the auth router------------------------------------------------------------
 
  app.use('/api/v1',userRouter);
+ app.use('/api/v1/post',postRouter)
 
   //-----------------------------------------------globalErrorHandling------------------------------------------------------------
   app.use(globalErrorHandling as any);

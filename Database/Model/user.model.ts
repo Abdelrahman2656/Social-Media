@@ -1,10 +1,10 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { providers, roles } from "../../Src/Utils/constant/enum";
-import { AppNext } from "../../Src/Utils/type";
 import { Hash } from "../../Src/Utils/encryption";
 
 //schema
 interface IUser {
+  
   firstName: string;
   lastName: string;
   email: string;
@@ -18,8 +18,9 @@ interface IUser {
   provider: string;
   phone: String;
 }
-
-const userSchema = new Schema<IUser>({
+// Mongoose Document Type
+export interface UserDocument extends IUser, Document { _id: Types.ObjectId;}
+const userSchema = new Schema<UserDocument>({
   firstName: {
     type: String,
     required: true,
@@ -85,7 +86,8 @@ const userSchema = new Schema<IUser>({
   otpEmail: String,
   expiredDateOtp: Date,
 });
-//pre
+//pre 
+//hash Password
 userSchema.pre("save",function(next){
 // this >> doc
 if(this.isModified("password") && typeof this.password === "string"){
@@ -96,4 +98,4 @@ next()
 
 
 //model
-export const User = model<IUser>("User", userSchema);
+export const User = model<UserDocument>("User", userSchema);

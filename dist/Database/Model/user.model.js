@@ -69,7 +69,8 @@ const userSchema = new mongoose_1.Schema({
     otpEmail: String,
     expiredDateOtp: Date,
 });
-//pre
+//pre 
+//hash Password
 userSchema.pre("save", function (next) {
     // this >> doc
     if (this.isModified("password") && typeof this.password === "string") {

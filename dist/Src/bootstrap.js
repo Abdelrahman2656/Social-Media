@@ -21,6 +21,7 @@ const bootstrap = (app, express) => {
     (0, dbconnection_1.dbconnection)();
     //----------------------------------------------- Use the auth router------------------------------------------------------------
     app.use('/api/v1', Modules_1.userRouter);
+    app.use('/api/v1/post', Modules_1.postRouter);
     //-----------------------------------------------globalErrorHandling------------------------------------------------------------
     app.use(asyncHandler_1.globalErrorHandling);
 };

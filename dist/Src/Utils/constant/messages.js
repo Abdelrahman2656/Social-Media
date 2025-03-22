@@ -29,4 +29,5 @@ exports.messages = {
         Incorrect: "Incorrect In Email Or Password",
         AlreadyVerified: "You Already Verified"
     },
+    post: generateMessage('Post')
 };

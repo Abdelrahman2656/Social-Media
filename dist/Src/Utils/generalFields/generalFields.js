@@ -19,4 +19,15 @@ exports.generalFields = {
     refreshToken: joi_1.default.string(),
     idToken: joi_1.default.string(),
     phone: joi_1.default.string().pattern(new RegExp(/^(00201|\+201|01)[0-2,5]{1}[0-9]{8}$/)),
+    content: joi_1.default.string(),
+    attachment: joi_1.default.array().items(joi_1.default.object({
+        fieldname: joi_1.default.string().required(),
+        originalname: joi_1.default.string().required(),
+        encoding: joi_1.default.string().required(),
+        mimetype: joi_1.default.string().required(),
+        size: joi_1.default.number().required(),
+        filename: joi_1.default.string().required(),
+        destination: joi_1.default.string().required(),
+        path: joi_1.default.string().required(),
+    }))
 };
