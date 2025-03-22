@@ -5,6 +5,9 @@ const AppError_1 = require("../Utils/AppError/AppError");
 const isValid = (schema) => {
     return (req, res, next) => {
         let data = { ...req.body, ...req.params, ...req.query };
+        if (req.file || req.files) {
+            data.attachment = req.file || req.files;
+        }
         let { error } = schema.validate(data, { abortEarly: false });
         if (error) {
             const errMSG = error.details.map((err) => err.message);

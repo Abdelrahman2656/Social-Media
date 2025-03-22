@@ -112,7 +112,7 @@ const login = async (req, res, next) => {
     //generate token
     const accessToken = (0, token_1.generateToken)({
         payload: { email, id: userExist.id },
-        options: { expiresIn: '1d' },
+        options: { expiresIn: '1h' },
     });
     const refreshToken = (0, token_1.generateToken)({
         payload: { email, id: userExist.id },
@@ -124,8 +124,8 @@ const login = async (req, res, next) => {
         .json({
         message: messages_1.messages.user.loginSuccessfully,
         success: true,
-        accessToken,
-        refreshToken,
+        access_token: accessToken,
+        refresh_token: refreshToken,
     });
 };
 exports.login = login;

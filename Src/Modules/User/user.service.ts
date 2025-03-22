@@ -137,7 +137,7 @@ export const login = async (
   //generate token
   const accessToken = generateToken({
     payload: { email, id: userExist.id },
-    options: { expiresIn: '1d' },
+    options: { expiresIn: '1h' },
   });
   const refreshToken = generateToken({
     payload: { email, id: userExist.id },
@@ -149,8 +149,8 @@ export const login = async (
     .json({
       message: messages.user.loginSuccessfully,
       success: true,
-      accessToken,
-      refreshToken,
+      access_token:accessToken,
+      refresh_token:refreshToken,
     });
 };
 //---------------------------------------------------Login With Google --------------------------------------------------------------
