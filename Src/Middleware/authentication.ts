@@ -76,12 +76,12 @@ export const isAuthentication =
           // Check token
           const result = await verifyToken({ token ,secretKey:process.env.SECRET_TOKEN}); // ⬅️ Await the promise
 
-        // 🔹 Verify Token (Ensure `verifyToken` doesn't return null)
-    
+      // Debug: Log decoded token
+    console.log("🔹 Decoded Token:", result);
 
-        if (!result) {
-            return next(new AppError("Invalid or expired token", 401));  // ✅ Properly handle failure
-          }
+    if (!result || !("_id" in result)) {
+      return next(new AppError("Invalid or expired token", 401));
+    }
 
           // Check if user exists
           const authUser = await User.findOne({ _id: result._id,isConfirmed:true});
