@@ -5,5 +5,5 @@ import { generalFields } from "../../Utils/generalFields/generalFields";
 export const createPostVal = joi.object({
 content:generalFields.content,
 attachment:generalFields.attachment,
-
+publisher:generalFields.objectId
 }).or('content','attachment')

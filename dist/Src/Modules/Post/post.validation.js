@@ -10,4 +10,5 @@ const generalFields_1 = require("../../Utils/generalFields/generalFields");
 exports.createPostVal = joi_1.default.object({
     content: generalFields_1.generalFields.content,
     attachment: generalFields_1.generalFields.attachment,
+    publisher: generalFields_1.generalFields.objectId
 }).or('content', 'attachment');
