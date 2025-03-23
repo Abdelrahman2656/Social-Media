@@ -40,17 +40,20 @@ interface VerifyToken {
     secretKey?: string;
 }
 
-export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | { message: string } => {
+export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | null => {
     try {
         const decoded = jwt.verify(token, secretKey) as JwtPayload;
         console.log("✅ Decoded Token:", decoded);
-        if (!("_id" in decoded)) {
+
+        // Ensure the token has `_id`
+        if (!decoded._id) {
             console.error("❌ Token missing '_id' field");
-           
+            return null;
         }
+
         return decoded;
     } catch (error) {
         console.error("❌ Token Verification Error:", error);
-        return { message: (error as Error).message };
+        return null;
     }
 };

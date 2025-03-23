@@ -197,8 +197,8 @@ const refreshToken = async (req, res, next) => {
     }
     //decode token
     const result = (0, token_1.verifyToken)({ token: refreshToken });
-    if ("message" in result) {
-        return next(new Error(result.message));
+    if (!result) {
+        return next(new AppError_1.AppError("Invalid or expired token", 401));
     }
     //generate token
     const accessToken = (0, token_1.generateToken)({

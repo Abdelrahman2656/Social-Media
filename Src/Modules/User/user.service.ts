@@ -228,8 +228,8 @@ export const refreshToken = async (
   }
   //decode token
   const result = verifyToken({ token: refreshToken });
-  if ("message" in result) {
-    return next(new Error(result.message));
+  if (!result) {
+    return next(new AppError("Invalid or expired token", 401));
   }
   //generate token
   const accessToken = generateToken({
