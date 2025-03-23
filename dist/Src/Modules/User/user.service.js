@@ -112,7 +112,7 @@ const login = async (req, res, next) => {
     //generate token
     const accessToken = (0, token_1.generateToken)({
         payload: { email, id: userExist.id },
-        options: { expiresIn: '1h' },
+        options: { expiresIn: '1d' },
     });
     const refreshToken = (0, token_1.generateToken)({
         payload: { email, id: userExist.id },
