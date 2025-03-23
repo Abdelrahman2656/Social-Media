@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthentication = void 0;
 const Database_1 = require("../../Database");
+const AppError_1 = require("../Utils/AppError/AppError");
+const messages_1 = require("../Utils/constant/messages");
 const token_1 = require("../Utils/Token/token");
 const isAuthentication = async (req, res, next) => {
     try {
@@ -17,12 +19,9 @@ const isAuthentication = async (req, res, next) => {
             return next(new Error("Invalid token"));
         }
         // Check if user exists
-        const userExist = await Database_1.User.findOne({ email: result.email });
+        const userExist = await Database_1.User.findOne({ email: result._id, isConfirmed: true });
         if (!userExist) {
-            return next(new Error("Invalid email"));
-        }
-        if (userExist.isDeleted === true) {
-            return next(new Error("Login first"));
+            return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
         }
         // Store authenticated user in request object
         req.authUser = userExist;

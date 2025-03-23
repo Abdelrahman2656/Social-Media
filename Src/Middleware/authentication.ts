@@ -80,13 +80,11 @@ export const isAuthentication =
         }
 
           // Check if user exists
-          const userExist = await User.findOne({ email: result.email });
+          const userExist = await User.findOne({ email: result._id ,isConfirmed:true});
           if (!userExist) {
-              return next(new Error("Invalid email"));
+              return next(new AppError(messages.user.notFound,404));
           }
-          if (userExist.isDeleted === true) {
-              return next(new Error("Login first"));
-          }
+      
 
         
 
