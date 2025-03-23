@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { User } from "../../Database";
 import { AppError } from "../Utils/AppError/AppError";
 import { messages } from "../Utils/constant/messages";
@@ -27,9 +28,16 @@ let token = authorization.split(' ')[1]
   if (typeof payload === "string" || "message" in payload) {
     return next(new AppError((payload as { message: string }).message, 401));
   }
-  console.log("Decoded Payload:", payload); // ✅ للتحقق من محتوى التوكن
+  console.log("Decoded Payload:", payload); 
   //userExist 
-  let authUser = await User.findOne({_id:payload._id,isConfirmed:true})
+  if (!mongoose.Types.ObjectId.isValid(payload._id)) {
+    return next(new AppError("Invalid User ID in Token", 400));
+  }
+  const userId = new mongoose.Types.ObjectId(payload._id);
+
+  // 🔹 البحث عن المستخدم في قاعدة البيانات
+  let authUser = await User.findOne({ _id: userId, isConfirmed: true });
+
   if(!authUser){
     return next(new AppError(messages.user.notFound,404))
   }

@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthentication = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const Database_1 = require("../../Database");
 const AppError_1 = require("../Utils/AppError/AppError");
 const messages_1 = require("../Utils/constant/messages");
@@ -22,9 +26,14 @@ const isAuthentication = () => {
             if (typeof payload === "string" || "message" in payload) {
                 return next(new AppError_1.AppError(payload.message, 401));
             }
-            console.log("Decoded Payload:", payload); // ✅ للتحقق من محتوى التوكن
+            console.log("Decoded Payload:", payload);
             //userExist 
-            let authUser = await Database_1.User.findOne({ _id: payload._id, isConfirmed: true });
+            if (!mongoose_1.default.Types.ObjectId.isValid(payload._id)) {
+                return next(new AppError_1.AppError("Invalid User ID in Token", 400));
+            }
+            const userId = new mongoose_1.default.Types.ObjectId(payload._id);
+            // 🔹 البحث عن المستخدم في قاعدة البيانات
+            let authUser = await Database_1.User.findOne({ _id: userId, isConfirmed: true });
             if (!authUser) {
                 return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
             }
