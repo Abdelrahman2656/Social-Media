@@ -36,7 +36,7 @@ return jwt.sign(payload,secretKey,options)
 
 
 interface VerifyToken {
-    token: string;
+    token: any;
     secretKey?: string;
 }
 
