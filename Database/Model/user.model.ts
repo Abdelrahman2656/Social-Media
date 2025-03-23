@@ -19,7 +19,7 @@ interface IUser {
   phone: String;
 }
 // Mongoose Document Type
-export interface UserDocument extends IUser, Document { _id: Types.ObjectId;}
+export interface UserDocument extends IUser, Document { _id: Schema.Types.ObjectId;}
 const userSchema = new Schema<UserDocument>({
   firstName: {
     type: String,

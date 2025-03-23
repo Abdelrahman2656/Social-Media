@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 import { User, UserDocument } from "../../Database";
 import { AppError } from "../Utils/AppError/AppError";
 import { messages } from "../Utils/constant/messages";
-import { verifyToken } from "../Utils/Token/token"
+
 import { AppNext, AppRequest, AppResponse } from "../Utils/type"
 import { JwtPayload } from "jsonwebtoken";
 import { AuthenticatedRequest } from "./authorization";
+import { verifyToken } from "../Utils/Token/token";
 
 
 // interface AuthenticatedRequest extends AppRequest {
@@ -73,10 +74,11 @@ export const isAuthentication =
           const token = authorization.split(" ")[1]; // ["hambozo", "token"]
 
           // Check token
-          const result = verifyToken({token}); // payload >> email, fail >> error
-          if (!result || !result._id) {
+          const result = await verifyToken({ token }); // ⬅️ Await the promise
+
+          if (!result || typeof result !== "object" || !("_id" in result)) {
             return next(new AppError("Invalid token", 401));
-        }
+          }
 
           // Check if user exists
           const authUser = await User.findOne({ _id: result._id,isConfirmed:true});

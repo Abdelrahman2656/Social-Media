@@ -11,7 +11,8 @@ const postRouter = Router();
 //create post
 postRouter.post(
   "/create-post",
-  
+  isAuthentication,
+  isAuthorization([roles.USER]),
   cloudUpload({}).array('attachment',5),
   isValid(postValidation.createPostVal),
   asyncHandler(postService.createPost)
