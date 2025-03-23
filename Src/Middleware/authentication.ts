@@ -42,9 +42,7 @@ let token = authorization.split(' ')[1]
     return next(new AppError(messages.user.notFound,404))
   }
   req.authUser = authUser
-  next(
-    
-  )
+  next()
        }catch(error){
         return next(new AppError("Authentication failed", 500));
        }
