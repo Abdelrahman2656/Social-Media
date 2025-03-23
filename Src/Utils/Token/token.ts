@@ -1,6 +1,7 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken'
 import { AppError } from '../AppError/AppError'
 interface Token {
+    _id?: string;
     [key:string]:any
 }
 interface GenerateToken {
@@ -42,11 +43,15 @@ interface VerifyToken {
 
 export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | null => {
     try {
+        if (!token) {
+            console.error("❌ Token is missing");
+            return null;
+        }
+
         const decoded = jwt.verify(token, secretKey) as JwtPayload;
         console.log("✅ Decoded Token:", decoded);
 
-        // Ensure the token has `_id`
-        if (!decoded._id) {
+        if (!decoded || !("_id" in decoded)) {
             console.error("❌ Token missing '_id' field");
             return null;
         }

@@ -8,6 +8,7 @@ const isAuthorization = (roles = []) => {
         if (!req.authUser || !roles.includes(req.authUser.role)) {
             return next(new AppError_1.AppError(messages_1.messages.user.notAuthorized, 401));
         }
+        next();
     };
 };
 exports.isAuthorization = isAuthorization;

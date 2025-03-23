@@ -80,16 +80,16 @@ export const isAuthentication =
         }
 
           // Check if user exists
-          const userExist = await User.findOne({ _id: result._id,isConfirmed:true});
-          if (!userExist) {
+          const authUser = await User.findOne({ _id: result._id,isConfirmed:true});
+          if (!authUser) {
               return next(new AppError(messages.user.notFound,404));
           }
       
 
         
-
+          console.log("✅ Authenticated User:", authUser); 
           // Store authenticated user in request object
-          req.authUser = userExist;
+          req.authUser = authUser;
           next();
       } catch (error) {
           return next(new Error("Authentication failed"));

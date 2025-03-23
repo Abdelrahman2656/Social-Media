@@ -19,12 +19,13 @@ const isAuthentication = async (req, res, next) => {
             return next(new AppError_1.AppError("Invalid token", 401));
         }
         // Check if user exists
-        const userExist = await Database_1.User.findOne({ _id: result._id, isConfirmed: true });
-        if (!userExist) {
+        const authUser = await Database_1.User.findOne({ _id: result._id, isConfirmed: true });
+        if (!authUser) {
             return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
         }
+        console.log("✅ Authenticated User:", authUser);
         // Store authenticated user in request object
-        req.authUser = userExist;
+        req.authUser = authUser;
         next();
     }
     catch (error) {

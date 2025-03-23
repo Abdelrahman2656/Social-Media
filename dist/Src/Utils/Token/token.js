@@ -11,10 +11,13 @@ const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN, options 
 exports.generateToken = generateToken;
 const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
     try {
+        if (!token) {
+            console.error("❌ Token is missing");
+            return null;
+        }
         const decoded = jsonwebtoken_1.default.verify(token, secretKey);
         console.log("✅ Decoded Token:", decoded);
-        // Ensure the token has `_id`
-        if (!decoded._id) {
+        if (!decoded || !("_id" in decoded)) {
             console.error("❌ Token missing '_id' field");
             return null;
         }
