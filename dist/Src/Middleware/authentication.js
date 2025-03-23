@@ -14,10 +14,10 @@ const isAuthentication = () => {
         try {
             // get token 
             let { authorization } = req.headers;
-            if (!authorization?.startsWith('abdelrahman')) {
+            if (!authorization?.startsWith("abdelrahman")) {
                 return next(new AppError_1.AppError('Invalid Bearer Token', 401));
             }
-            let token = authorization.split(' ')[1];
+            let token = authorization.split(" ")[1];
             if (!token) {
                 return next(new AppError_1.AppError('Token Required', 401));
             }
