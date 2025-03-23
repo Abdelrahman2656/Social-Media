@@ -9,9 +9,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // return jwt.sign(payload,secretKey,options)
 // }
 const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN, options }) => {
-    if (!payload._id) {
-        throw new Error("❌ Missing _id in Token Payload");
-    }
+    // if (!payload._id) {
+    //     throw new Error("❌ Missing _id in Token Payload");
+    // }
     return jsonwebtoken_1.default.sign(payload, secretKey, options);
 };
 exports.generateToken = generateToken;

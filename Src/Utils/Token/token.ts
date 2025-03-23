@@ -13,9 +13,9 @@ interface GenerateToken {
 // return jwt.sign(payload,secretKey,options)
 // }
 export const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN as string, options }: GenerateToken): string => {
-    if (!payload._id) {
-        throw new Error("❌ Missing _id in Token Payload");
-    }
+    // if (!payload._id) {
+    //     throw new Error("❌ Missing _id in Token Payload");
+    // }
     return jwt.sign(payload, secretKey, options);
 };
 
