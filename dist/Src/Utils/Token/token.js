@@ -11,9 +11,12 @@ const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN, options 
 exports.generateToken = generateToken;
 const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
     try {
-        return jsonwebtoken_1.default.verify(token, secretKey);
+        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        console.log("✅ Decoded Token:", decoded); // 🔍 تحقق من البيانات بعد فك التشفير
+        return decoded;
     }
     catch (error) {
+        console.error("❌ Token Verification Error:", error);
         return { message: error.message };
     }
 };

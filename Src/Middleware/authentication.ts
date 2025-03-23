@@ -29,6 +29,10 @@ let token = authorization.split(' ')[1]
     return next(new AppError((payload as { message: string }).message, 401));
   }
   console.log("Decoded Payload:", payload); 
+        // 🔹 التحقق من صحة _id
+        if (!payload._id || typeof payload._id !== "string") {
+          return next(new AppError("Invalid User ID in Token", 400));
+        }
   //userExist 
   if (!mongoose.Types.ObjectId.isValid(payload._id)) {
     return next(new AppError("Invalid User ID in Token", 400));

@@ -16,10 +16,13 @@ interface VerifyToken {
     token:string,
     secretKey?:string
 }
-export const verifyToken =({token ,secretKey = process.env.SECRET_TOKEN as string }:VerifyToken):JwtPayload  | { message: string }=>{
-try{
-    return jwt.verify(token,secretKey) as JwtPayload
-}catch(error){
-return {message:(error as AppError).message}
-}
-}
+export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | { message: string } => {
+    try {
+      const decoded = jwt.verify(token, secretKey) as JwtPayload;
+      console.log("✅ Decoded Token:", decoded); // 🔍 تحقق من البيانات بعد فك التشفير
+      return decoded;
+    } catch (error) {
+      console.error("❌ Token Verification Error:", error);
+      return { message: (error as Error).message };
+    }
+  };
