@@ -2,7 +2,7 @@ import { UserDocument } from "../../Database";
 import { AppError } from "../Utils/AppError/AppError";
 import { messages } from "../Utils/constant/messages";
 import { AppNext, AppRequest, AppResponse } from "../Utils/type"
-import { AuthenticatedRequest } from "./authentication";
+
 
 // export const isAuthorization=(roles:string[] = [])=>{
 //     return (req: AuthenticatedRequest,res:AppResponse,next:AppNext)=>{
@@ -40,3 +40,6 @@ export const isAuthorization = (roles: string[] = []) => {
       next();
     };
   };
+  export interface AuthenticatedRequest extends AppRequest {
+    authUser?: UserDocument;
+  }

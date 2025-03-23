@@ -5,6 +5,7 @@ import { messages } from "../Utils/constant/messages";
 import { verifyToken } from "../Utils/Token/token"
 import { AppNext, AppRequest, AppResponse } from "../Utils/type"
 import { JwtPayload } from "jsonwebtoken";
+import { AuthenticatedRequest } from "./authorization";
 
 
 // interface AuthenticatedRequest extends AppRequest {
@@ -57,9 +58,7 @@ import { JwtPayload } from "jsonwebtoken";
   
 // }
 
-export interface AuthenticatedRequest extends AppRequest {
-  authUser?: UserDocument; // Consider replacing `any` with a proper user type
-}
+
 
 export const isAuthentication = 
   async (req: AuthenticatedRequest, res: AppResponse, next: AppNext) => {

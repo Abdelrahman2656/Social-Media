@@ -18,7 +18,7 @@ const postSchema = new mongoose_1.Schema({
     publisher: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        // required:true,
     },
     likes: [{
             type: mongoose_1.Schema.Types.ObjectId,

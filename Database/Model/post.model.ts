@@ -32,7 +32,7 @@ const postSchema = new Schema<IPost>({
     publisher:{
         type:Schema.Types.ObjectId,
         ref:"User",
-        required:true,
+        // required:true,
     },
     likes:[{
         type:Schema.Types.ObjectId,
