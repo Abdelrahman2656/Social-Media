@@ -13,6 +13,9 @@ const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
     try {
         const decoded = jsonwebtoken_1.default.verify(token, secretKey);
         console.log("✅ Decoded Token:", decoded);
+        if (!("_id" in decoded)) {
+            console.error("❌ Token missing '_id' field");
+        }
         return decoded;
     }
     catch (error) {

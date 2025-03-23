@@ -15,9 +15,9 @@ const isAuthentication = async (req, res, next) => {
         const token = authorization.split(" ")[1]; // ["hambozo", "token"]
         // Check token
         const result = (0, token_1.verifyToken)({ token }); // payload >> email, fail >> error
-        //   if (!("email" in result)) {
-        //     return next(new Error("Invalid token"));
-        // }
+        if (!("email" in result)) {
+            return next(new Error("Invalid token"));
+        }
         // Check if user exists
         const userExist = await Database_1.User.findOne({ email: result._id, isConfirmed: true });
         if (!userExist) {

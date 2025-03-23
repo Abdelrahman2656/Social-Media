@@ -75,9 +75,9 @@ export const isAuthentication =
 
           // Check token
           const result = verifyToken({token}); // payload >> email, fail >> error
-        //   if (!("email" in result)) {
-        //     return next(new Error("Invalid token"));
-        // }
+          if (!("email" in result)) {
+            return next(new Error("Invalid token"));
+        }
 
           // Check if user exists
           const userExist = await User.findOne({ email: result._id,isConfirmed:true});

@@ -44,6 +44,10 @@ export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as str
     try {
         const decoded = jwt.verify(token, secretKey) as JwtPayload;
         console.log("✅ Decoded Token:", decoded);
+        if (!("_id" in decoded)) {
+            console.error("❌ Token missing '_id' field");
+           
+        }
         return decoded;
     } catch (error) {
         console.error("❌ Token Verification Error:", error);
