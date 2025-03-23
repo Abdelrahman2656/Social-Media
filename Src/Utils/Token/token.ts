@@ -36,29 +36,46 @@ return jwt.sign(payload,secretKey,options)
 //   };
 
 
-interface VerifyToken {
-    token: any;
+
+// Define a custom type for JWT payload
+interface CustomJwtPayload extends JwtPayload {
+    _id?: string;
+  }
+  
+  interface VerifyTokenParams {
+    token: string;
     secretKey?: string;
-}
-
-export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | null => {
+  }
+  
+  export const verifyToken = ({
+    token,
+    secretKey = process.env.SECRET_TOKEN as string,
+  }: VerifyTokenParams): CustomJwtPayload | null => {
     try {
-        if (!token) {
-            console.error("❌ Token is missing");
-            return null;
-        }
-
-        const decoded = jwt.verify(token, secretKey) as JwtPayload;
-        console.log("✅ Decoded Token:", decoded);
-
-        if (!decoded || !("_id" in decoded)) {
-            console.error("❌ Token missing '_id' field");
-            return null;
-        }
-
-        return decoded;
-    } catch (error) {
-        console.error("❌ Token Verification Error:", error);
+      if (!token) {
+        console.error("❌ Token is missing");
         return null;
+      }
+  
+      // Verify the token
+      const decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
+      console.log("✅ Decoded Token:", decoded);
+  
+      // Ensure `_id` exists in the payload
+      if (!decoded || !decoded._id) {
+        console.error("❌ Token missing '_id' field");
+        return null;
+      }
+  
+      return decoded;
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError") {
+        console.error("❌ Token has expired");
+      } else if (error.name === "JsonWebTokenError") {
+        console.error("❌ Invalid token signature");
+      } else {
+        console.error("❌ Token Verification Error:", error.message);
+      }
+      return null;
     }
-};
+  };

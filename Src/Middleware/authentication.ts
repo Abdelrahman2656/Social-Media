@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from "../../Database";
+import { User, UserDocument } from "../../Database";
 import { AppError } from "../Utils/AppError/AppError";
 import { messages } from "../Utils/constant/messages";
 import { verifyToken } from "../Utils/Token/token"
@@ -57,8 +57,8 @@ import { JwtPayload } from "jsonwebtoken";
   
 // }
 
-interface AuthenticatedRequest extends AppRequest {
-  authUser?: any; // Consider replacing `any` with a proper user type
+export interface AuthenticatedRequest extends AppRequest {
+  authUser?: UserDocument; // Consider replacing `any` with a proper user type
 }
 
 export const isAuthentication = 
