@@ -80,7 +80,7 @@ export const isAuthentication =
         }
 
           // Check if user exists
-          const userExist = await User.findOne({ email: result._id ,isConfirmed:true});
+          const userExist = await User.findOne({ email: result.email ,isConfirmed:true});
           if (!userExist) {
               return next(new AppError(messages.user.notFound,404));
           }

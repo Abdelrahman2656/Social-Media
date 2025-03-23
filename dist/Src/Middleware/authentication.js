@@ -19,7 +19,7 @@ const isAuthentication = async (req, res, next) => {
             return next(new Error("Invalid token"));
         }
         // Check if user exists
-        const userExist = await Database_1.User.findOne({ email: result._id, isConfirmed: true });
+        const userExist = await Database_1.User.findOne({ email: result.email, isConfirmed: true });
         if (!userExist) {
             return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
         }
