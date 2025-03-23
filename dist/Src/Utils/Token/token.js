@@ -9,37 +9,37 @@ const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN, options 
     return jsonwebtoken_1.default.sign(payload, secretKey, options);
 };
 exports.generateToken = generateToken;
+// export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
+//   try {
+//     return jwt.verify(token, secretKey) as JwtPayload;
+//   } catch (error) {
+//     console.error("❌ Token Verification Failed:", (error as Error).message);
+//     return null;  // ✅ Return null instead of an error object
+//   }
+// };
 const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
     try {
-        return jsonwebtoken_1.default.verify(token, secretKey);
+        if (!token) {
+            console.error("❌ Token is missing");
+            return null;
+        }
+        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        console.log("✅ Decoded Token:", decoded);
+        if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
+            console.error("❌ Token missing 'id' or '_id' field");
+            return null;
+        }
+        // Ensure consistency: Always use "_id"
+        decoded._id = decoded._id || decoded.id;
+        delete decoded.id;
+        return decoded;
     }
     catch (error) {
-        console.error("❌ Token Verification Failed:", error.message);
-        return null; // ✅ Return null instead of an error object
+        console.error("❌ Token Verification Error:", error);
+        return null; // Return null instead of throwing an error
     }
 };
 exports.verifyToken = verifyToken;
-// export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
-//     try {
-//         if (!token) {
-//             console.error("❌ Token is missing");
-//             return null;
-//         }
-//         const decoded = jwt.verify(token, secretKey) as JwtPayload;
-//         console.log("✅ Decoded Token:", decoded);
-//         if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
-//           console.error("❌ Token missing 'id' or '_id' field");
-//           return null;
-//       }
-//       // Ensure consistency: Always use "_id"
-//       decoded._id = decoded._id || decoded.id;
-//       delete decoded.id;
-//       return decoded; 
-//     } catch (error) {
-//         console.error("❌ Token Verification Error:", error);
-//         return null;  // Return null instead of throwing an error
-//     }
-// };
 // export const verifyToken = ({
 //   token,
 //   secretKey = process.env.SECRET_TOKEN as string,
