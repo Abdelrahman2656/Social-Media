@@ -8,14 +8,36 @@ interface GenerateToken {
     secretKey?:string,
     options?: SignOptions;
 }
-export const generateToken =({payload , secretKey = process.env.SECRET_TOKEN as string,options}:GenerateToken):string=>{
-return jwt.sign(payload,secretKey,options)
-}
+// export const generateToken =({payload , secretKey = process.env.SECRET_TOKEN as string,options}:GenerateToken):string=>{
+
+// return jwt.sign(payload,secretKey,options)
+// }
+export const generateToken = ({ payload, secretKey = process.env.SECRET_TOKEN as string, options }: GenerateToken): string => {
+    if (!payload._id) {
+        throw new Error("❌ Missing _id in Token Payload");
+    }
+    return jwt.sign(payload, secretKey, options);
+};
+
 //verify
 interface VerifyToken {
     token:string,
     secretKey?:string
 }
+// export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | { message: string } => {
+
+
+//     try {
+//       const decoded = jwt.verify(token, secretKey) as JwtPayload;
+//       console.log("✅ Decoded Token:", decoded); // 🔍 تحقق من البيانات بعد فك التشفير
+//       return decoded;
+//     } catch (error) {
+//       console.error("❌ Token Verification Error:", error);
+//       return { message: (error as Error).message };
+//     }
+//   };
+
+
 export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | { message: string } => {
     try {
       const decoded = jwt.verify(token, secretKey) as JwtPayload;
@@ -25,4 +47,4 @@ export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as str
       console.error("❌ Token Verification Error:", error);
       return { message: (error as Error).message };
     }
-  };
+};
