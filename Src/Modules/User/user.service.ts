@@ -231,9 +231,12 @@ export const refreshToken = async (
   if (!result) {
     return next(new AppError("Invalid or expired token", 401));
   }
+  if (!result || typeof result !== "object" || !("email" in result) || !("_id" in result)) {
+    return next(new AppError("Invalid or expired token", 401));
+  }
   //generate token
   const accessToken = generateToken({
-    payload: { email: result.email, id: result.id },
+    payload: { email: result.email, id: result._id },
     options: { expiresIn: "7d" },
   });
   //send response

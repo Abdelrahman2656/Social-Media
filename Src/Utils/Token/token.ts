@@ -17,60 +17,46 @@ return jwt.sign(payload,secretKey,options)
 
 
 
-//verify
-// interface VerifyToken {
-//     token:string,
-//     secretKey?:string
-// }
-// export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyToken): JwtPayload | { message: string } => {
-
-
-//     try {
-//       const decoded = jwt.verify(token, secretKey) as JwtPayload;
-//       console.log("✅ Decoded Token:", decoded); // 🔍 تحقق من البيانات بعد فك التشفير
-//       return decoded;
-//     } catch (error) {
-//       console.error("❌ Token Verification Error:", error);
-//       return { message: (error as Error).message };
-//     }
-//   };
 
 
 
-// Define a custom type for JWT payload
-interface CustomJwtPayload extends JwtPayload {
-    _id?: string;
-  }
+
   
   interface VerifyTokenParams {
     token: string;
     secretKey?: string;
 }
+export const verifyToken =({token ,secretKey = process.env.SECRET_TOKEN as string }:VerifyTokenParams):JwtPayload  | { message: string }=>{
+  try{
+      return jwt.verify(token,secretKey) as JwtPayload
+  }catch(error){
+  return {message:(error as AppError).message}
+  }
+  }
+// export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
+//     try {
+//         if (!token) {
+//             console.error("❌ Token is missing");
+//             return null;
+//         }
 
-export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
-    try {
-        if (!token) {
-            console.error("❌ Token is missing");
-            return null;
-        }
+//         const decoded = jwt.verify(token, secretKey) as JwtPayload;
+//         console.log("✅ Decoded Token:", decoded);
 
-        const decoded = jwt.verify(token, secretKey) as JwtPayload;
-        console.log("✅ Decoded Token:", decoded);
-
-        if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
-          console.error("❌ Token missing 'id' or '_id' field");
-          return null;
-      }
+//         if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
+//           console.error("❌ Token missing 'id' or '_id' field");
+//           return null;
+//       }
       
-      // Ensure consistency: Always use "_id"
-      decoded._id = decoded._id || decoded.id;
-      delete decoded.id;
-      return decoded; 
-    } catch (error) {
-        console.error("❌ Token Verification Error:", error);
-        return null;  // Return null instead of throwing an error
-    }
-};
+//       // Ensure consistency: Always use "_id"
+//       decoded._id = decoded._id || decoded.id;
+//       delete decoded.id;
+//       return decoded; 
+//     } catch (error) {
+//         console.error("❌ Token Verification Error:", error);
+//         return null;  // Return null instead of throwing an error
+//     }
+// };
 
 
 

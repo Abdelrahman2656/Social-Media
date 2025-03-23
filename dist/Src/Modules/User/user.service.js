@@ -200,9 +200,12 @@ const refreshToken = async (req, res, next) => {
     if (!result) {
         return next(new AppError_1.AppError("Invalid or expired token", 401));
     }
+    if (!result || typeof result !== "object" || !("email" in result) || !("_id" in result)) {
+        return next(new AppError_1.AppError("Invalid or expired token", 401));
+    }
     //generate token
     const accessToken = (0, token_1.generateToken)({
-        payload: { email: result.email, id: result.id },
+        payload: { email: result.email, id: result._id },
         options: { expiresIn: "7d" },
     });
     //send response
