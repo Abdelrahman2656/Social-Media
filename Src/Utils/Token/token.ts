@@ -32,14 +32,15 @@ export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as str
         console.log("✅ Decoded Token:", decoded);
 
         if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
-          console.error("❌ Token missing 'id' or '_id' field");
-          return null;
-      }
-      
-      // Ensure consistency: Always use "_id"
-      decoded._id = decoded._id || decoded.id;
-      delete decoded.id;
-      return decoded; 
+            console.error("❌ Token missing 'id' or '_id' field");
+            return null;
+        }
+
+        // Ensure consistency: Always use "_id"
+        decoded._id = decoded._id || decoded.id;
+        delete decoded.id;
+
+        return decoded;  // ✅ Add this return statement
     } catch (error) {
         console.error("❌ Token Verification Error:", error);
         return null;  // Return null instead of throwing an error

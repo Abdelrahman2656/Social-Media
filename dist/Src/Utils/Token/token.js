@@ -24,7 +24,7 @@ const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
         // Ensure consistency: Always use "_id"
         decoded._id = decoded._id || decoded.id;
         delete decoded.id;
-        return decoded;
+        return decoded; // ✅ Add this return statement
     }
     catch (error) {
         console.error("❌ Token Verification Error:", error);
