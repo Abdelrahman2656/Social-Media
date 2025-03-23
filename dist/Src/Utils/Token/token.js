@@ -15,20 +15,20 @@ const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
             console.error("❌ Token is missing");
             return null;
         }
-        if (!secretKey) {
-            throw new Error("SECRET_TOKEN is not defined in environment variables");
-        }
         const decoded = jsonwebtoken_1.default.verify(token, secretKey);
         console.log("✅ Decoded Token:", decoded);
-        if (!decoded || !("_id" in decoded)) {
-            console.error("❌ Token missing '_id' field");
+        if (!decoded || (!("_id" in decoded) && !("id" in decoded))) {
+            console.error("❌ Token missing 'id' or '_id' field");
             return null;
         }
+        // Ensure consistency: Always use "_id"
+        decoded._id = decoded._id || decoded.id;
+        delete decoded.id;
         return decoded;
     }
     catch (error) {
         console.error("❌ Token Verification Error:", error);
-        return null;
+        return null; // Return null instead of throwing an error
     }
 };
 exports.verifyToken = verifyToken;

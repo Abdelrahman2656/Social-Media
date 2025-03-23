@@ -56,9 +56,10 @@ const isAuthentication = async (req, res, next) => {
         }
         const token = authorization.split(" ")[1]; // ["hambozo", "token"]
         // Check token
-        const result = await (0, token_1.verifyToken)({ token }); // ⬅️ Await the promise
+        const result = await (0, token_1.verifyToken)({ token, secretKey: process.env.SECRET_TOKEN }); // ⬅️ Await the promise
+        // 🔹 Verify Token (Ensure `verifyToken` doesn't return null)
         if (!result || typeof result !== "object" || !("_id" in result)) {
-            return next(new AppError_1.AppError("Invalid token", 401));
+            return next(new AppError_1.AppError("Invalid or expired token", 401));
         }
         // Check if user exists
         const authUser = await Database_1.User.findOne({ _id: result._id, isConfirmed: true });

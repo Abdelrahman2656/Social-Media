@@ -74,11 +74,14 @@ export const isAuthentication =
           const token = authorization.split(" ")[1]; // ["hambozo", "token"]
 
           // Check token
-          const result = await verifyToken({ token }); // ⬅️ Await the promise
+          const result = await verifyToken({ token ,secretKey:process.env.SECRET_TOKEN}); // ⬅️ Await the promise
 
-          if (!result || typeof result !== "object" || !("_id" in result)) {
-            return next(new AppError("Invalid token", 401));
-          }
+        // 🔹 Verify Token (Ensure `verifyToken` doesn't return null)
+    
+
+    if (!result || typeof result !== "object" || !("_id" in result)) {
+      return next(new AppError("Invalid or expired token", 401));
+    }
 
           // Check if user exists
           const authUser = await User.findOne({ _id: result._id,isConfirmed:true});

@@ -136,11 +136,11 @@ export const login = async (
   }
   //generate token
   const accessToken = generateToken({
-    payload: { email, id: userExist.id },
+    payload: { email, id: userExist._id },
     options: { expiresIn: '1d' },
   });
   const refreshToken = generateToken({
-    payload: { email, id: userExist.id },
+    payload: { email, id: userExist._id },
     options: { expiresIn: "7d" },
   });
   //return response
@@ -173,11 +173,11 @@ if(!userExist){
 }
   //generate token
   const accessToken = generateToken({
-    payload: { email, id: userExist.id },
+    payload: { email, id: userExist._id },
     options: { expiresIn: "1d" },
   });
   const refreshToken = generateToken({
-    payload: { email, id: userExist.id },
+    payload: { email, id: userExist._id },
     options: { expiresIn: "7d" },
   });
   //return response
