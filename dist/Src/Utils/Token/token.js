@@ -16,7 +16,7 @@ const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN, }) => {
             return null;
         }
         // Verify the token
-        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        let decoded = jsonwebtoken_1.default.verify(token, secretKey);
         console.log("✅ Decoded Token:", decoded);
         // Ensure `_id` exists in the payload
         if (!decoded || !decoded._id) {

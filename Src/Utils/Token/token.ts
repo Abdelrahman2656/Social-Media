@@ -58,7 +58,7 @@ interface CustomJwtPayload extends JwtPayload {
       }
   
       // Verify the token
-      const decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
+      let decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
       console.log("✅ Decoded Token:", decoded);
   
       // Ensure `_id` exists in the payload
