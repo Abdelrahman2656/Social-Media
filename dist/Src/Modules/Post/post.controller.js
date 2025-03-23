@@ -34,7 +34,6 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const authentication_1 = require("../../Middleware/authentication");
 const authorization_1 = require("../../Middleware/authorization");
 const enum_1 = require("../../Utils/constant/enum");
 const Cloud_Upload_1 = require("../../Utils/Cloud-Upload");
@@ -44,5 +43,5 @@ const postValidation = __importStar(require("./post.validation"));
 const asyncHandler_1 = require("../../Middleware/asyncHandler");
 const postRouter = (0, express_1.Router)();
 //create post
-postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)({}).array('attachment', 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
+postRouter.post("/create-post", (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)({}).array('attachment', 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
 exports.default = postRouter;
