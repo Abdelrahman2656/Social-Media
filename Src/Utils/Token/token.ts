@@ -26,13 +26,14 @@ return jwt.sign(payload,secretKey,options)
     token: string;
     secretKey?: string;
 }
-export const verifyToken =({token ,secretKey = process.env.SECRET_TOKEN as string }:VerifyTokenParams):JwtPayload  | { message: string }=>{
-  try{
-      return jwt.verify(token,secretKey) as JwtPayload
-  }catch(error){
-  return {message:(error as AppError).message}
+export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
+  try {
+    return jwt.verify(token, secretKey) as JwtPayload;
+  } catch (error) {
+    console.error("❌ Token Verification Failed:", (error as Error).message);
+    return null;  // ✅ Return null instead of an error object
   }
-  }
+};
 // export const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN as string }: VerifyTokenParams): JwtPayload | null => {
 //     try {
 //         if (!token) {

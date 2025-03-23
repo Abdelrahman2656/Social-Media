@@ -14,7 +14,8 @@ const verifyToken = ({ token, secretKey = process.env.SECRET_TOKEN }) => {
         return jsonwebtoken_1.default.verify(token, secretKey);
     }
     catch (error) {
-        return { message: error.message };
+        console.error("❌ Token Verification Failed:", error.message);
+        return null; // ✅ Return null instead of an error object
     }
 };
 exports.verifyToken = verifyToken;

@@ -79,9 +79,9 @@ export const isAuthentication =
         // 🔹 Verify Token (Ensure `verifyToken` doesn't return null)
     
 
-    if (!result || typeof result !== "object" || !("_id" in result)) {
-      return next(new AppError("Invalid or expired token", 401));
-    }
+        if (!result) {
+            return next(new AppError("Invalid or expired token", 401));  // ✅ Properly handle failure
+          }
 
           // Check if user exists
           const authUser = await User.findOne({ _id: result._id,isConfirmed:true});
