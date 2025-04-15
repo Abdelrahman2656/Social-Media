@@ -7,3 +7,7 @@ content:generalFields.content,
 attachment:generalFields.attachment,
 publisher:generalFields.objectId
 }).or('content','attachment')
+//like or unlike
+export const  likeOrUnlike = joi.object({
+userId:generalFields.objectId.required()
+}).required()
