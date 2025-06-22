@@ -1,15 +1,17 @@
 
-import { User } from "../../../Database";
-import { AppError } from "../../Utils/AppError/AppError";
-import { messages } from "../../Utils/constant/messages";
-import {  generateAndSecondSendOTP, generateAndSendOTP, secondOTPForgetPassword, sendOTPForgetPassword } from "../../Utils/Email/emailEvent";
-import { comparePassword, Encrypt, Hash } from "../../Utils/encryption";
-import { generateToken, verifyToken } from "../../Utils/Token/token";
-import { AppNext, AppRequest, AppResponse } from "../../Utils/type";
-import { generateOTP } from "../../Utils/otp";
-import { verifyGoogleToken } from "../../Utils/verifyGoogle/verifyGoogle";
-import { providers } from "../../Utils/constant/enum";
-
+import { User } from "../../../../Database";
+import { AppError } from "../../../Utils/AppError/AppError";
+import { messages } from "../../../Utils/constant/messages";
+import {  generateAndSecondSendOTP, generateAndSendOTP, secondOTPForgetPassword, sendOTPForgetPassword } from "../../../Utils/Email/emailEvent";
+import { comparePassword, Encrypt, Hash } from "../../../Utils/encryption";
+import { generateToken, verifyToken } from "../../../Utils/Token/token";
+import { AppNext, AppRequest, AppResponse } from "../../../Utils/type";
+import { generateOTP } from "../../../Utils/otp";
+import { verifyGoogleToken } from "../../../Utils/verifyGoogle/verifyGoogle";
+import { providers } from "../../../Utils/constant/enum";
+import cloudinary from "../../../Utils/Cloud-Upload/cloud";
+import { customAlphabet } from "nanoid";
+const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10)
 
 //---------------------------------------------------Sign Up --------------------------------------------------------------
 export const signUp = async (
@@ -18,11 +20,23 @@ export const signUp = async (
   next: AppNext
 ) => {
   //get data from req
-  let { firstName,phone ,lastName, email, password, role} = req.body;
+  let { firstName,phone ,lastName,email,password, role} = req.body;
+  //upload image
+  if (!req.file && req.body.provider === providers.SYSTEM)  {
+  return next(new AppError("Image is required", 400));
+}
+if (!req.file) {
+  // fallback safe guard
+  return next(new AppError("Something went wrong with the file upload", 400));
+}
+const userCode = generateCustomCode();
+  let{secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
+    folder:`Social-Media/Users/${userCode}/Profile`
+  })
+      req.failImage = { secure_url, public_id };
   //check userExist
   let userExist = await User.findOne({ email });
-  
-
+  console.log(req.file);
 
   //send email
   if (userExist) {
@@ -58,10 +72,12 @@ let cipherText=Encrypt({key :phone,secretKey:process.env.SECRET_CRYPTO })
     phone:cipherText || undefined,
     password,
     role,
-    
+    attachment:{secure_url,public_id},
+    userCode
   });
   const userCreated = await user.save();
   if (!userCreated) {
+    req.failImage={secure_url,public_id}
     return next(new AppError(messages.user.failToCreate, 500));
   }
   await generateAndSendOTP(email,firstName,lastName)

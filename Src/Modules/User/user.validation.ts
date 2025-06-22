@@ -15,6 +15,11 @@ password:generalFields.password.when("provider", {
 cPassword:generalFields.cPassword.required(),
 DOB:generalFields.DOB,
 otpEmail:generalFields.otpEmail,
+attachment:generalFields.image.when("provider",{
+    is:providers.SYSTEM,
+    then:joi.required(),
+    otherwise:joi.optional()
+}),
 phone:generalFields.phone.optional()
 
 })

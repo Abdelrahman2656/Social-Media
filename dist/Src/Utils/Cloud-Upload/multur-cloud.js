@@ -35,9 +35,8 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cloudUpload = void 0;
 const AppError_1 = require("../AppError/AppError");
-const filevalidation_1 = require("./filevalidation");
 const multer_1 = __importStar(require("multer"));
-const cloudUpload = ({ allowType = filevalidation_1.fileValidation.image } = {}) => {
+const cloudUpload = (allowType = []) => {
     //storage 
     const storage = (0, multer_1.diskStorage)({});
     //file filter

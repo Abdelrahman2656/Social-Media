@@ -39,12 +39,14 @@ const authorization_1 = require("../../Middleware/authorization");
 const enum_1 = require("../../Utils/constant/enum");
 const Cloud_Upload_1 = require("../../Utils/Cloud-Upload");
 const validation_1 = require("../../Middleware/validation");
-const postService = __importStar(require("./post.service"));
+const postService = __importStar(require("./Services/post.service"));
 const postValidation = __importStar(require("./post.validation"));
 const asyncHandler_1 = require("../../Middleware/asyncHandler");
 const postRouter = (0, express_1.Router)();
 //create post
-postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)({}).array("attachment", 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
+postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)([...Cloud_Upload_1.fileValidation.image, ...Cloud_Upload_1.fileValidation.videos, ...Cloud_Upload_1.fileValidation.documents, ...Cloud_Upload_1.fileValidation.audios,]).array("attachment", 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
 //like or unlike
 postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.likeOrUnlike), (0, asyncHandler_1.asyncHandler)(postService.likeOrUnlike));
+// get posts
+postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
 exports.default = postRouter;

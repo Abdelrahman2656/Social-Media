@@ -4,7 +4,8 @@ import mongoose, { model, Schema, Types } from "mongoose"
 //
 interface Attachment{
  secure_url:string,
- public_id:string
+ public_id:string,
+ resource_type:string
 }
 
 //interface
@@ -27,7 +28,10 @@ const postSchema = new Schema<IPost>({
         public_id:{
             type:String, required:true
         },
-        
+        resource_type:{
+            type:String
+        },
+
     }],
     publisher:{
         type:Schema.Types.ObjectId,

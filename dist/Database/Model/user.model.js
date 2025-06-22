@@ -43,6 +43,32 @@ const userSchema = new mongoose_1.Schema({
         },
         trim: true,
     },
+    attachment: {
+        secure_url: {
+            type: String,
+            validate: {
+                validator: function (value) {
+                    if (this.provider === enum_1.providers.SYSTEM) {
+                        return !!value;
+                    }
+                    return true;
+                },
+                message: "Image is required for SYSTEM provider",
+            },
+        },
+        public_id: {
+            type: String,
+            validate: {
+                validator: function (value) {
+                    if (this.provider === enum_1.providers.SYSTEM) {
+                        return !!value;
+                    }
+                    return true;
+                },
+                message: "Image is required for SYSTEM provider",
+            },
+        },
+    },
     phone: {
         type: String,
         unique: true,
@@ -58,6 +84,7 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    userCode: { type: String, unique: true },
     isDeleted: {
         type: Boolean,
         default: false,

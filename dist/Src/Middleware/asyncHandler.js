@@ -16,6 +16,9 @@ const globalErrorHandling = async (err, req, res, next) => {
             await (0, Cloud_Upload_1.deleteCloudImage)(public_id);
         }
     }
+    if (req.failImage) {
+        await (0, Cloud_Upload_1.deleteCloudImage)(req.failImage.public_id);
+    }
     if (process.env.MODE == 'DEV') {
         return res.status(err.statusCode || 500).json({ message: err.message, success: false, stack: err.stack });
     }

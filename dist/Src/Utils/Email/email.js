@@ -8,8 +8,6 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const sendEmail = async ({ to, subject, html, attachments = [] }) => {
     const transporter = nodemailer_1.default.createTransport({
         service: "gmail",
-        port: 456,
-        secure: true,
         auth: {
             user: process.env.USER_SENDER,
             pass: process.env.PASS_EMAIL

@@ -2,9 +2,9 @@ import { Router } from "express";
 import { isAuthentication } from "../../Middleware/authentication";
 import { isAuthorization } from "../../Middleware/authorization";
 import { roles } from "../../Utils/constant/enum";
-import { cloudUpload } from "../../Utils/Cloud-Upload";
+import { cloudUpload, fileValidation } from "../../Utils/Cloud-Upload";
 import { isValid } from "../../Middleware/validation";
-import * as postService from "./post.service";
+import * as postService from "./Services/post.service";
 import * as postValidation from "./post.validation";
 import { asyncHandler } from "../../Middleware/asyncHandler";
 const postRouter = Router();
@@ -13,7 +13,7 @@ postRouter.post(
   "/create-post",
   isAuthentication,
   isAuthorization([roles.USER]),
-  cloudUpload({}).array("attachment", 5),
+  cloudUpload([...fileValidation.image , ...fileValidation.videos ,...fileValidation.documents ,  ...fileValidation.audios,]).array("attachment", 5),
   isValid(postValidation.createPostVal),
   asyncHandler(postService.createPost)
 );
@@ -25,4 +25,6 @@ postRouter.patch(
   isValid(postValidation.likeOrUnlike),
   asyncHandler(postService.likeOrUnlike)
 );
+// get posts
+postRouter.get("/",isAuthentication,isAuthorization([roles.USER]),asyncHandler(postService.getPosts))
 export default postRouter;

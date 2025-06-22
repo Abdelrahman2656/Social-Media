@@ -3,6 +3,10 @@ import { providers, roles } from "../../Src/Utils/constant/enum";
 import { Hash } from "../../Src/Utils/encryption";
 
 //schema
+interface Image{
+ secure_url:string,
+ public_id:string
+}
 interface IUser {
   
   firstName: string;
@@ -17,6 +21,8 @@ interface IUser {
   DOB: string;
   provider: string;
   phone: String;
+  attachment:Image[],
+  userCode:string
 }
 // Mongoose Document Type
 export interface UserDocument extends IUser, Document { _id: Schema.Types.ObjectId;}
@@ -59,6 +65,32 @@ const userSchema = new Schema<UserDocument>({
     },
     trim: true,
   },
+  attachment:{
+    secure_url:{
+      type:String,
+        validate: {
+      validator: function (this: IUser, value: string) {
+        if (this.provider === providers.SYSTEM) {
+          return !!value; 
+        }
+        return true; 
+      },
+      message: "Image is required for SYSTEM provider",
+    },
+    },
+    public_id:{
+      type:String,
+        validate: {
+      validator: function (this: IUser, value: string) {
+        if (this.provider === providers.SYSTEM) {
+          return !!value; 
+        }
+        return true; 
+      },
+      message: "Image is required for SYSTEM provider",
+    },
+    },
+  },
   phone: {
     type: String,
     unique: true,
@@ -74,7 +106,7 @@ const userSchema = new Schema<UserDocument>({
     type: Boolean,
     default: false,
   },
-
+userCode: { type: String, unique: true },
   isDeleted: {
     type: Boolean,
     default: false,

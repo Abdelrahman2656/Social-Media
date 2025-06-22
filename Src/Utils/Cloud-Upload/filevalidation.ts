@@ -16,5 +16,5 @@ export const fileValidation = {
       "video/x-msvideo",
     ],
     audios: ["audio/midi", "audio/mpeg", "audio/webm", "audio/ogg", "audio/wav"],
-    documents: ["application/javascript", "application/json", "application/pdf"],
+    documents: ["application/javascript", "application/json", "application/pdf" ,"application/vnd.openxmlformats-officedocument.wordprocessingml.document" ,"application/msword"],
   };

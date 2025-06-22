@@ -14,6 +14,9 @@ const postSchema = new mongoose_1.Schema({
             public_id: {
                 type: String, required: true
             },
+            resource_type: {
+                type: String
+            },
         }],
     publisher: {
         type: mongoose_1.Schema.Types.ObjectId,

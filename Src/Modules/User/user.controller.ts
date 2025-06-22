@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { asyncHandler } from "../../Middleware/asyncHandler";
 import { isValid } from "../../Middleware/validation";
-import * as US from './user.service';
+import * as US from './Services/user.service';
 import * as VA from './user.validation';
+import { cloudUpload, fileValidation } from "../../Utils/Cloud-Upload";
 const userRouter = Router()
 // sign up
-userRouter.post('/signup',isValid(VA.signUpVal),asyncHandler(US.signUp))
+userRouter.post('/signup',cloudUpload([...fileValidation.image]).single("attachment"),isValid(VA.signUpVal),asyncHandler(US.signUp))
 // confirm email 
 userRouter.patch('/confirm-email',isValid(VA.confirmEmailVal),asyncHandler(US.ConfirmEmail))
 //activate-account

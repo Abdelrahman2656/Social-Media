@@ -36,11 +36,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const asyncHandler_1 = require("../../Middleware/asyncHandler");
 const validation_1 = require("../../Middleware/validation");
-const US = __importStar(require("./user.service"));
+const US = __importStar(require("./Services/user.service"));
 const VA = __importStar(require("./user.validation"));
+const Cloud_Upload_1 = require("../../Utils/Cloud-Upload");
 const userRouter = (0, express_1.Router)();
 // sign up
-userRouter.post('/signup', (0, validation_1.isValid)(VA.signUpVal), (0, asyncHandler_1.asyncHandler)(US.signUp));
+userRouter.post('/signup', (0, Cloud_Upload_1.cloudUpload)([...Cloud_Upload_1.fileValidation.image]).single("attachment"), (0, validation_1.isValid)(VA.signUpVal), (0, asyncHandler_1.asyncHandler)(US.signUp));
 // confirm email 
 userRouter.patch('/confirm-email', (0, validation_1.isValid)(VA.confirmEmailVal), (0, asyncHandler_1.asyncHandler)(US.ConfirmEmail));
 //activate-account

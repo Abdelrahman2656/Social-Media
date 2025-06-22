@@ -22,6 +22,11 @@ exports.signUpVal = joi_1.default.object({
     cPassword: generalFields_1.generalFields.cPassword.required(),
     DOB: generalFields_1.generalFields.DOB,
     otpEmail: generalFields_1.generalFields.otpEmail,
+    attachment: generalFields_1.generalFields.image.when("provider", {
+        is: enum_1.providers.SYSTEM,
+        then: joi_1.default.required(),
+        otherwise: joi_1.default.optional()
+    }),
     phone: generalFields_1.generalFields.phone.optional()
 });
 //confirm Email
