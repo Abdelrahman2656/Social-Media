@@ -1,5 +1,5 @@
 
-import { customAlphabet } from "nanoid";
+
 import { User } from "../../../../Database";
 import { AppError } from "../../../Utils/AppError/AppError";
 import cloudinary from "../../../Utils/Cloud-Upload/cloud";
@@ -11,8 +11,11 @@ import { generateOTP } from "../../../Utils/otp";
 import { generateToken, verifyToken } from "../../../Utils/Token/token";
 import { AppNext, AppRequest, AppResponse } from "../../../Utils/type";
 import { verifyGoogleToken } from "../../../Utils/verifyGoogle/verifyGoogle";
-const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10)
-
+let generateCustomCode: () => string;
+(async () => {
+  const { customAlphabet } = await import("nanoid");
+  generateCustomCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10);
+})();
 //---------------------------------------------------Sign Up --------------------------------------------------------------
 export const signUp = async (
   req: AppRequest,
