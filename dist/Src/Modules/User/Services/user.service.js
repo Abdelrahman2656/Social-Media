@@ -4,17 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changePassword = exports.forgetPassword = exports.refreshToken = exports.activateAccount = exports.loginWithGoogle = exports.login = exports.ConfirmEmail = exports.signUp = void 0;
+const nanoid_1 = require("nanoid");
 const Database_1 = require("../../../../Database");
 const AppError_1 = require("../../../Utils/AppError/AppError");
+const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
+const enum_1 = require("../../../Utils/constant/enum");
 const messages_1 = require("../../../Utils/constant/messages");
 const emailEvent_1 = require("../../../Utils/Email/emailEvent");
 const encryption_1 = require("../../../Utils/encryption");
-const token_1 = require("../../../Utils/Token/token");
 const otp_1 = require("../../../Utils/otp");
+const token_1 = require("../../../Utils/Token/token");
 const verifyGoogle_1 = require("../../../Utils/verifyGoogle/verifyGoogle");
-const enum_1 = require("../../../Utils/constant/enum");
-const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
-const nanoid_1 = require("nanoid");
 const generateCustomCode = (0, nanoid_1.customAlphabet)('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
 //---------------------------------------------------Sign Up --------------------------------------------------------------
 const signUp = async (req, res, next) => {
@@ -30,7 +30,7 @@ const signUp = async (req, res, next) => {
     }
     const userCode = generateCustomCode();
     let { secure_url, public_id } = await cloud_1.default.uploader.upload(req.file.path, {
-        folder: `Social-Media/Users/${userCode}/Profile`
+        folder: `Social-Media/Users/Profile/${userCode}`
     });
     req.failImage = { secure_url, public_id };
     //check userExist

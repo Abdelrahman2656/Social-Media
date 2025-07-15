@@ -32,9 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const asyncHandler_1 = require("../../Middleware/asyncHandler");
@@ -43,16 +40,20 @@ const authorization_1 = require("../../Middleware/authorization");
 const validation_1 = require("../../Middleware/validation");
 const Cloud_Upload_1 = require("../../Utils/Cloud-Upload");
 const enum_1 = require("../../Utils/constant/enum");
-const comment_controller_1 = __importDefault(require("../Comment/comment.controller"));
-const postService = __importStar(require("./Services/post.service"));
-const postValidation = __importStar(require("./post.validation"));
-const postRouter = (0, express_1.Router)();
-// send params to child
-postRouter.use("/:postId/comment", comment_controller_1.default);
-//create post
-postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)([...Cloud_Upload_1.fileValidation.image, ...Cloud_Upload_1.fileValidation.videos, ...Cloud_Upload_1.fileValidation.documents, ...Cloud_Upload_1.fileValidation.audios,]).array("attachment", 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
-//like or unlike
-postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.likeOrUnlike), (0, asyncHandler_1.asyncHandler)(postService.likeOrUnlike));
-// get posts
-postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
-exports.default = postRouter;
+const commentValidation = __importStar(require("./comment.validation"));
+const commentService = __importStar(require("./Service/comment.service"));
+const commentRouter = (0, express_1.Router)({ mergeParams: true });
+//create comment
+commentRouter.post("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, Cloud_Upload_1.cloudUpload)([
+    ...Cloud_Upload_1.fileValidation.image,
+    ...Cloud_Upload_1.fileValidation.videos,
+    ...Cloud_Upload_1.fileValidation.audios,
+    ...Cloud_Upload_1.fileValidation.documents,
+]).fields([
+    { name: "attachment", maxCount: 1 },
+    { name: "voice", maxCount: 1 },
+]), (0, validation_1.isValid)(commentValidation.createComment), (0, asyncHandler_1.asyncHandler)(commentService.createComment));
+//get comment
+//post/postId/comment
+commentRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, validation_1.isValid)(commentValidation.getComment), (0, asyncHandler_1.asyncHandler)(commentService.getComment));
+exports.default = commentRouter;

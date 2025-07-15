@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import path from "path";
 import { dbconnection } from "../Database/dbconnection";
 import { globalErrorHandling } from "./Middleware/asyncHandler";
-import { postRouter, userRouter } from "./Modules";
+import { commentRouter, postRouter, userRouter } from "./Modules";
 import { limiter } from './Utils/RateLimiter/rateLimiter';
 
 export const bootstrap = (
@@ -29,6 +29,7 @@ app.use(helmet())
 
  app.use('/api/v1',userRouter);
  app.use('/api/v1/post',postRouter)
+ app.use("/api/v1/comment",commentRouter)
 
   //-----------------------------------------------globalErrorHandling------------------------------------------------------------
   app.use(globalErrorHandling as any);

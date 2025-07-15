@@ -1,16 +1,16 @@
 
+import { customAlphabet } from "nanoid";
 import { User } from "../../../../Database";
 import { AppError } from "../../../Utils/AppError/AppError";
+import cloudinary from "../../../Utils/Cloud-Upload/cloud";
+import { providers } from "../../../Utils/constant/enum";
 import { messages } from "../../../Utils/constant/messages";
-import {  generateAndSecondSendOTP, generateAndSendOTP, secondOTPForgetPassword, sendOTPForgetPassword } from "../../../Utils/Email/emailEvent";
+import { generateAndSecondSendOTP, generateAndSendOTP, secondOTPForgetPassword, sendOTPForgetPassword } from "../../../Utils/Email/emailEvent";
 import { comparePassword, Encrypt, Hash } from "../../../Utils/encryption";
+import { generateOTP } from "../../../Utils/otp";
 import { generateToken, verifyToken } from "../../../Utils/Token/token";
 import { AppNext, AppRequest, AppResponse } from "../../../Utils/type";
-import { generateOTP } from "../../../Utils/otp";
 import { verifyGoogleToken } from "../../../Utils/verifyGoogle/verifyGoogle";
-import { providers } from "../../../Utils/constant/enum";
-import cloudinary from "../../../Utils/Cloud-Upload/cloud";
-import { customAlphabet } from "nanoid";
 const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10)
 
 //---------------------------------------------------Sign Up --------------------------------------------------------------
@@ -31,7 +31,7 @@ if (!req.file) {
 }
 const userCode = generateCustomCode();
   let{secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
-    folder:`Social-Media/Users/${userCode}/Profile`
+    folder:`Social-Media/Users/Profile/${userCode}`
   })
       req.failImage = { secure_url, public_id };
   //check userExist

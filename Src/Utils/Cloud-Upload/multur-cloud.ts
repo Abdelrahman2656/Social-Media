@@ -13,9 +13,13 @@ const storage = diskStorage({})
         }
         cb(new AppError("invalid file format", 400))
     }
+    
     //return
     return multer({
         storage,
-        fileFilter
+        fileFilter,
+        limits:{
+            fileSize:  100 * 1024 * 1024,
+        }
     })
 }

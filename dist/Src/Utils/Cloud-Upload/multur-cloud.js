@@ -50,7 +50,10 @@ const cloudUpload = (allowType = []) => {
     //return
     return (0, multer_1.default)({
         storage,
-        fileFilter
+        fileFilter,
+        limits: {
+            fileSize: 100 * 1024 * 1024,
+        }
     });
 };
 exports.cloudUpload = cloudUpload;

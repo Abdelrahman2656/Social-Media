@@ -1,13 +1,16 @@
 import { Router } from "express";
+import { asyncHandler } from "../../Middleware/asyncHandler";
 import { isAuthentication } from "../../Middleware/authentication";
 import { isAuthorization } from "../../Middleware/authorization";
-import { roles } from "../../Utils/constant/enum";
-import { cloudUpload, fileValidation } from "../../Utils/Cloud-Upload";
 import { isValid } from "../../Middleware/validation";
+import { cloudUpload, fileValidation } from "../../Utils/Cloud-Upload";
+import { roles } from "../../Utils/constant/enum";
+import commentRouter from "../Comment/comment.controller";
 import * as postService from "./Services/post.service";
 import * as postValidation from "./post.validation";
-import { asyncHandler } from "../../Middleware/asyncHandler";
 const postRouter = Router();
+// send params to child
+postRouter.use("/:postId/comment",commentRouter)
 //create post
 postRouter.post(
   "/create-post",

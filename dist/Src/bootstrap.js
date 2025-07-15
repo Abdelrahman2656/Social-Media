@@ -28,6 +28,7 @@ const bootstrap = (app, express) => {
     //----------------------------------------------- Use the auth router------------------------------------------------------------
     app.use('/api/v1', Modules_1.userRouter);
     app.use('/api/v1/post', Modules_1.postRouter);
+    app.use("/api/v1/comment", Modules_1.commentRouter);
     //-----------------------------------------------globalErrorHandling------------------------------------------------------------
     app.use(asyncHandler_1.globalErrorHandling);
 };
