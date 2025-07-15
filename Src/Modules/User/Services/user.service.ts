@@ -11,11 +11,7 @@ import { generateOTP } from "../../../Utils/otp";
 import { generateToken, verifyToken } from "../../../Utils/Token/token";
 import { AppNext, AppRequest, AppResponse } from "../../../Utils/type";
 import { verifyGoogleToken } from "../../../Utils/verifyGoogle/verifyGoogle";
-let generateCustomCode: () => string;
-(async () => {
-  const { customAlphabet } = await import("nanoid");
-  generateCustomCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10);
-})();
+
 //---------------------------------------------------Sign Up --------------------------------------------------------------
 export const signUp = async (
   req: AppRequest,
@@ -32,6 +28,8 @@ if (!req.file) {
   // fallback safe guard
   return next(new AppError("Something went wrong with the file upload", 400));
 }
+const { customAlphabet } = await import('nanoid');
+  const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
 const userCode = generateCustomCode();
   let{secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
     folder:`Social-Media/Users/Profile/${userCode}`

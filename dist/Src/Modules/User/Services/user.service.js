@@ -47,11 +47,6 @@ const encryption_1 = require("../../../Utils/encryption");
 const otp_1 = require("../../../Utils/otp");
 const token_1 = require("../../../Utils/Token/token");
 const verifyGoogle_1 = require("../../../Utils/verifyGoogle/verifyGoogle");
-let generateCustomCode;
-(async () => {
-    const { customAlphabet } = await Promise.resolve().then(() => __importStar(require("nanoid")));
-    generateCustomCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10);
-})();
 //---------------------------------------------------Sign Up --------------------------------------------------------------
 const signUp = async (req, res, next) => {
     //get data from req
@@ -64,6 +59,8 @@ const signUp = async (req, res, next) => {
         // fallback safe guard
         return next(new AppError_1.AppError("Something went wrong with the file upload", 400));
     }
+    const { customAlphabet } = await Promise.resolve().then(() => __importStar(require('nanoid')));
+    const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
     const userCode = generateCustomCode();
     let { secure_url, public_id } = await cloud_1.default.uploader.upload(req.file.path, {
         folder: `Social-Media/Users/Profile/${userCode}`
