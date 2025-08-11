@@ -21,7 +21,7 @@ const createPost = async (req, res, next) => {
         for (const file of req.files) {
             const { secure_url, public_id, resource_type } = await cloud_1.default.uploader.upload(file.path, {
                 folder: `Social-Media/Users/${userId}/Posts`,
-                resource_type: "auto"
+                resource_type: "auto",
             });
             attachment.push({ secure_url, public_id, resource_type });
             failImages.push(public_id);
@@ -40,9 +40,7 @@ const createPost = async (req, res, next) => {
         return next(new AppError_1.AppError(messages_1.messages.post.failToCreate, 500));
     }
     //send response
-    return res
-        .status(201)
-        .json({
+    return res.status(201).json({
         message: messages_1.messages.post.createdSuccessfully,
         success: true,
         postData: postCreated,
@@ -75,11 +73,10 @@ const likeOrUnlike = async (req, res, next) => {
     //save in db
     const postUpdated = await postExist.save();
     //send response
-    return res
-        .status(200)
-        .json({
+    return res.status(200).json({
         messages: messages_1.messages.post.updateSuccessfully,
         success: true,
+        TotalLikes: postUpdated.likes.length,
         postUpdated,
     });
 };
@@ -108,8 +105,16 @@ const getPosts = async (req, res, next) => {
                 from: "users",
                 localField: "likes",
                 foreignField: "_id",
-                as: "likes"
-            }
+                as: "likes",
+            },
+        },
+        {
+            $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "post",
+                as: "comments",
+            },
         },
         {
             $project: {
@@ -121,6 +126,7 @@ const getPosts = async (req, res, next) => {
                 "likes.firstName": 1,
                 "likes.lastName": 1,
                 "likes.attachment.secure_url": 1,
+                comments: 1
             },
         },
     ]);

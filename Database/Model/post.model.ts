@@ -47,6 +47,12 @@ const postSchema = new Schema<IPost>({
         type:Boolean,
         default:false
     }
+},{timestamps:true , toJSON:{virtuals:true},toObject:{virtuals:true}})
+//comment virtual
+postSchema.virtual("comments",{
+    ref:"Comment",
+    localField:"_id",
+    foreignField:"post"
 })
 //model
 export const Post = model<IPost>('Post',postSchema)

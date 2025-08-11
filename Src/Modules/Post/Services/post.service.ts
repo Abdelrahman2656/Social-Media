@@ -18,14 +18,12 @@ export const createPost = async (
   let attachment = [];
   if (Array.isArray(req.files)) {
     for (const file of req.files) {
-      const { secure_url, public_id ,resource_type} = await cloudinary.uploader.upload(
-        file.path,
-        {
+      const { secure_url, public_id, resource_type } =
+        await cloudinary.uploader.upload(file.path, {
           folder: `Social-Media/Users/${userId}/Posts`,
-          resource_type:"auto"
-        }
-      );
-      attachment.push({ secure_url, public_id , resource_type});
+          resource_type: "auto",
+        });
+      attachment.push({ secure_url, public_id, resource_type });
       failImages.push(public_id);
     }
   }
@@ -42,13 +40,11 @@ export const createPost = async (
     return next(new AppError(messages.post.failToCreate, 500));
   }
   //send response
-  return res
-    .status(201)
-    .json({
-      message: messages.post.createdSuccessfully,
-      success: true,
-      postData: postCreated,
-    });
+  return res.status(201).json({
+    message: messages.post.createdSuccessfully,
+    success: true,
+    postData: postCreated,
+  });
 };
 //---------------------------------------------------Like Or Unlike--------------------------------------------------------------
 
@@ -80,14 +76,14 @@ export const likeOrUnlike = async (
   }
   //save in db
   const postUpdated = await postExist.save();
+
   //send response
-  return res
-    .status(200)
-    .json({
-      messages: messages.post.updateSuccessfully,
-      success: true,
-      postUpdated,
-    });
+  return res.status(200).json({
+    messages: messages.post.updateSuccessfully,
+    success: true,
+    TotalLikes: postUpdated.likes.length,
+    postUpdated,
+  });
 };
 //---------------------------------------------------Get Posts--------------------------------------------------------------
 export const getPosts = async (
@@ -110,18 +106,25 @@ export const getPosts = async (
         foreignField: "_id",
         as: "publisher",
       },
-      
     },
 
     { $unwind: "$publisher" },
     {
-  $lookup: {
-      from: "users",
-      localField: "likes",
-      foreignField: "_id",
-      as: "likes"
-    }
-},
+      $lookup: {
+        from: "users",
+        localField: "likes",
+        foreignField: "_id",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "post",
+        as: "comments",
+      },
+    },
     {
       $project: {
         "publisher.firstName": 1,
@@ -132,6 +135,7 @@ export const getPosts = async (
         "likes.firstName": 1,
         "likes.lastName": 1,
         "likes.attachment.secure_url": 1,
+       comments:1
       },
     },
   ]);
