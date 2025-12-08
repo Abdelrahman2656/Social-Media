@@ -137,14 +137,14 @@ exports.getPosts = getPosts;
 //---------------------------------------------------Get Specific Posts--------------------------------------------------------------
 const getSpecificPost = async (req, res, next) => {
     //get data from  params 
-    let { id } = req.params;
+    const { id } = req.params;
     //check post Existence 
     const postExistence = await post_model_1.Post.findById(id);
     if (!postExistence) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
     //get post 
-    const post = await post_model_1.Post.find().populate([
+    const post = await post_model_1.Post.findById(id).populate([
         { path: "publisher", select: "firstName lastName attachment.secure_url" },
         { path: "likes", select: "firstName lastName attachment.secure_url " },
         { path: "comments", match: { parentComment: { $exists: false } } }
