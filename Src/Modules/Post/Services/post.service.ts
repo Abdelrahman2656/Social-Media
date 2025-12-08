@@ -146,7 +146,7 @@ export const getPosts = async (
   shareLink: `${process.env.BASE_URL}api/v1/post/${p._id}`
 }));
   //send response
-  return res.status(200).json({ success: true, posts ,TotalPost ,postsWithShare});
+  return res.status(200).json({ success: true, postData:postsWithShare ,TotalPost});
 };
 //---------------------------------------------------Get Specific Posts--------------------------------------------------------------
 export const getSpecificPost=async(req:AppRequest,res:AppResponse,next:AppNext)=>{
