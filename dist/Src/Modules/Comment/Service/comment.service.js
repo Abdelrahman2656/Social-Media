@@ -89,9 +89,9 @@ exports.createComment = createComment;
 //---------------------------------------------------Get Comment--------------------------------------------------------------
 const getComment = async (req, res, next) => {
     //get data from req
-    const { postId } = req.params;
+    const { postId, id } = req.params;
     //get comment
-    const commentData = await Database_1.Comment.find({ post: postId }).populate([
+    const commentData = await Database_1.Comment.find({ post: postId, parentComment: id }).populate([
         { path: "userComment", select: "firstName lastName attachment.secure_url" },
         { path: "likes", select: "firstName lastName attachment.secure_url" },
         {

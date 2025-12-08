@@ -130,8 +130,14 @@ const getPosts = async (req, res, next) => {
             },
         },
     ]);
+    //total post
+    const TotalPost = await post_model_1.Post.countDocuments();
+    const postsWithShare = posts.map(p => ({
+        ...p,
+        shareLink: `${process.env.BASE_URL}api/v1/post/${p._id}`
+    }));
     //send response
-    return res.status(200).json({ success: true, posts });
+    return res.status(200).json({ success: true, posts, TotalPost });
 };
 exports.getPosts = getPosts;
 //---------------------------------------------------Get Specific Posts--------------------------------------------------------------
@@ -149,7 +155,9 @@ const getSpecificPost = async (req, res, next) => {
         { path: "likes", select: "firstName lastName attachment.secure_url " },
         { path: "comments", match: { parentComment: { $exists: false } } }
     ]);
+    //share link
+    const shareLink = `${process.env.BASE_URL}api/v1/post/${postExistence.id}`;
     //send response 
-    return res.status(200).json({ success: true, post });
+    return res.status(200).json({ success: true, post, shareLink });
 };
 exports.getSpecificPost = getSpecificPost;

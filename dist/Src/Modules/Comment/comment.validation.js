@@ -20,5 +20,6 @@ exports.createComment = joi_1.default.object({
 });
 //get comment
 exports.getComment = joi_1.default.object({
-    postId: generalFields_1.generalFields.objectId
+    id: generalFields_1.generalFields.objectId,
+    postId: generalFields_1.generalFields.objectId.required()
 }).required();

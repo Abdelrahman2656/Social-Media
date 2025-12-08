@@ -55,5 +55,5 @@ commentRouter.post("/:id?", authentication_1.isAuthentication, (0, authorization
 ]), (0, validation_1.isValid)(commentValidation.createComment), (0, asyncHandler_1.asyncHandler)(commentService.createComment));
 //get comment
 //post/postId/comment
-commentRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, validation_1.isValid)(commentValidation.getComment), (0, asyncHandler_1.asyncHandler)(commentService.getComment));
+commentRouter.get("/:id?", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, validation_1.isValid)(commentValidation.getComment), (0, asyncHandler_1.asyncHandler)(commentService.getComment));
 exports.default = commentRouter;

@@ -15,5 +15,6 @@ attachment:generalFields.image.when("text",{
 })
 //get comment
 export const getComment =joi.object({
-    postId:generalFields.objectId
+    id:generalFields.objectId,
+    postId:generalFields.objectId.required()
 }).required()

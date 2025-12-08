@@ -28,7 +28,7 @@ commentRouter.post(
 //get comment
 //post/postId/comment
 commentRouter.get(
-  "/",
+  "/:id?",
   isAuthentication,
   isAuthorization([roles.USER, roles.ADMIN]),
   isValid(commentValidation.getComment),
