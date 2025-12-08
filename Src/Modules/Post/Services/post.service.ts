@@ -164,7 +164,7 @@ const post = await Post.findById(id).populate([
   {path:"comments",match:{parentComment:{$exists:false}}}
 ])
 //share link
-const shareLink =`${process.env.BASE_URL}api/v1/post/${postExistence.id}`
+const shareLink =`${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${postExistence.id}`
 //send response 
 return res.status(200).json({success:true , post ,shareLink})
 }
