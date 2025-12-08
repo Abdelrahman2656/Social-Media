@@ -106,7 +106,7 @@ const getComment = async (req, res, next) => {
         },
     ]);
     //total comment
-    const TotalComment = await Database_1.Comment.countDocuments({ post: postId, parentComment: id });
+    const TotalComment = await Database_1.Comment.countDocuments({ post: postId, parentComment: id || undefined });
     //send response
     return res.status(200).json({ success: true, TotalComment, commentData });
 };
