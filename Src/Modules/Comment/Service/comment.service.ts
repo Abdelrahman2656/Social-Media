@@ -116,7 +116,7 @@ export const getComment = async (
     },
   ]);
   //total comment
-  const TotalComment = await Comment.countDocuments();
+  const TotalComment = await Comment.countDocuments({post:postId});
   //send response
   return res.status(200).json({ success: true, TotalComment, commentData });
 };
