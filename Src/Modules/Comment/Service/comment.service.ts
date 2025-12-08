@@ -21,6 +21,8 @@ export const createComment = async (
   if (!postExistence) {
     return next(new AppError(messages.comment.notFound, 404));
   }
+  //check if it reply or comment
+  const isReply =Boolean(id)
   //upload attachment
   const files = req.files as Record<string, Express.Multer.File[]>;
   console.log(files);
@@ -30,7 +32,7 @@ export const createComment = async (
   if (files?.attachment && files.attachment.length > 0) {
     let { secure_url, public_id, resource_type } =
       await cloudinary.uploader.upload(files.attachment[0].path, {
-        folder: `Social-Media/Users/${postExistence.publisher}/Posts/Comment`,
+        folder: `Social-Media/Users/${postExistence.publisher}/Posts/${isReply ? "Replies" :"Comment"}`,
         resource_type: "auto",
       });
     attachment = { secure_url, public_id, resource_type };
@@ -74,7 +76,7 @@ export const createComment = async (
     text,
     attachment,
     voice,
-    parentComment:id
+    parentComment:id ||undefined
   });
   //save to db
   const commentCreated = await comment.save();
