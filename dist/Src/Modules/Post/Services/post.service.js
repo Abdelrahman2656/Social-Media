@@ -156,7 +156,7 @@ const getSpecificPost = async (req, res, next) => {
         { path: "comments", match: { parentComment: { $exists: false } } }
     ]);
     //share link
-    const shareLink = `${process.env.BASE_URL}/api/v1/post/${postExistence.id}`;
+    const shareLink = `${process.env.BASE_URL}api/v1/post/${postExistence.id}`;
     //send response 
     return res.status(200).json({ success: true, post, shareLink });
 };
