@@ -8,6 +8,7 @@ const joi_1 = __importDefault(require("joi"));
 const generalFields_1 = require("../../Utils/generalFields/generalFields");
 //create comment 
 exports.createComment = joi_1.default.object({
+    id: generalFields_1.generalFields.objectId,
     postId: generalFields_1.generalFields.objectId.required(),
     text: generalFields_1.generalFields.text.required(),
     attachment: generalFields_1.generalFields.image.when("text", {

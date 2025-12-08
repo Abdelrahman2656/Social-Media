@@ -43,8 +43,8 @@ const enum_1 = require("../../Utils/constant/enum");
 const commentValidation = __importStar(require("./comment.validation"));
 const commentService = __importStar(require("./Service/comment.service"));
 const commentRouter = (0, express_1.Router)({ mergeParams: true });
-//create comment
-commentRouter.post("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, Cloud_Upload_1.cloudUpload)([
+//create comment and reply
+commentRouter.post("/:id?", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, Cloud_Upload_1.cloudUpload)([
     ...Cloud_Upload_1.fileValidation.image,
     ...Cloud_Upload_1.fileValidation.videos,
     ...Cloud_Upload_1.fileValidation.audios,

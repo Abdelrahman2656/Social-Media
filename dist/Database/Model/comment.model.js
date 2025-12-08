@@ -46,7 +46,11 @@ const commentSchema = new mongoose_1.Schema({
     likes: [{
             type: mongoose_1.Schema.Types.ObjectId,
             ref: "User",
-        }]
+        }],
+    parentComment: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "Comment"
+    }
 }, {
     timestamps: true
 });
