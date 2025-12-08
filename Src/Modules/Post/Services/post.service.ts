@@ -52,7 +52,7 @@ export const likeOrUnlike = async (
   req: AppRequest,
   res: AppResponse,
   next: AppNext
-) => {
+) => { 
   //get data from params
   const { userId } = req.params;
   //check post existence
@@ -142,3 +142,21 @@ export const getPosts = async (
   //send response
   return res.status(200).json({ success: true, posts });
 };
+//---------------------------------------------------Get Specific Posts--------------------------------------------------------------
+export const getSpecificPost=async(req:AppRequest,res:AppResponse,next:AppNext)=>{
+//get data from  params 
+let {id}=req.params
+//check post Existence 
+const postExistence = await Post.findById(id)
+if(!postExistence){
+return next(new AppError(messages.post.notFound,404))
+}
+//get post 
+const post = await Post.find().populate([
+ {path :"publisher" , select:"firstName lastName attachment.secure_url"},
+  {path:"likes" , select:"firstName lastName attachment.secure_url "},
+  {path:"comments",match:{parentComment:{$exists:false}}}
+])
+//send response 
+return res.status(200).json({success:true , post})
+}

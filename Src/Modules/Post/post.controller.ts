@@ -10,13 +10,18 @@ import * as postService from "./Services/post.service";
 import * as postValidation from "./post.validation";
 const postRouter = Router();
 // send params to child
-postRouter.use("/:postId/comment",commentRouter)
+postRouter.use("/:postId/comment", commentRouter);
 //create post
 postRouter.post(
   "/create-post",
   isAuthentication,
   isAuthorization([roles.USER]),
-  cloudUpload([...fileValidation.image , ...fileValidation.videos ,...fileValidation.documents ,  ...fileValidation.audios,]).array("attachment", 5),
+  cloudUpload([
+    ...fileValidation.image,
+    ...fileValidation.videos,
+    ...fileValidation.documents,
+    ...fileValidation.audios,
+  ]).array("attachment", 5),
   isValid(postValidation.createPostVal),
   asyncHandler(postService.createPost)
 );
@@ -29,5 +34,18 @@ postRouter.patch(
   asyncHandler(postService.likeOrUnlike)
 );
 // get posts
-postRouter.get("/",isAuthentication,isAuthorization([roles.USER]),asyncHandler(postService.getPosts))
+postRouter.get(
+  "/",
+  isAuthentication,
+  isAuthorization([roles.USER]),
+  asyncHandler(postService.getPosts)
+);
+//get specific post
+postRouter.get(
+  "/:id",
+  isAuthentication,
+  isAuthorization([roles.USER]),
+  isValid(postValidation.getSpecificPost),
+  asyncHandler(postService.getSpecificPost)
+);
 export default postRouter;

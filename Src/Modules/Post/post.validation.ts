@@ -13,3 +13,7 @@ publisher:generalFields.objectId
 export const  likeOrUnlike = joi.object({
 userId:generalFields.objectId.required()
 }).required()
+//get specific post
+export const getSpecificPost = joi.object({
+    id:generalFields.objectId.required()
+}).required() 

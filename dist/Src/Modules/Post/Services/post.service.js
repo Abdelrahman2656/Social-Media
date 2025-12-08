@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
+exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
 const post_model_1 = require("../../../../Database/Model/post.model");
@@ -134,3 +134,22 @@ const getPosts = async (req, res, next) => {
     return res.status(200).json({ success: true, posts });
 };
 exports.getPosts = getPosts;
+//---------------------------------------------------Get Specific Posts--------------------------------------------------------------
+const getSpecificPost = async (req, res, next) => {
+    //get data from  params 
+    let { id } = req.params;
+    //check post Existence 
+    const postExistence = await post_model_1.Post.findById(id);
+    if (!postExistence) {
+        return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
+    }
+    //get post 
+    const post = await post_model_1.Post.find().populate([
+        { path: "publisher", select: "firstName lastName attachment.secure_url" },
+        { path: "likes", select: "firstName lastName attachment.secure_url " },
+        { path: "comments", match: { parentComment: { $exists: false } } }
+    ]);
+    //send response 
+    return res.status(200).json({ success: true, post });
+};
+exports.getSpecificPost = getSpecificPost;

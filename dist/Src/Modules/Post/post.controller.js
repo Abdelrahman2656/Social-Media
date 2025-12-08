@@ -50,9 +50,16 @@ const postRouter = (0, express_1.Router)();
 // send params to child
 postRouter.use("/:postId/comment", comment_controller_1.default);
 //create post
-postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)([...Cloud_Upload_1.fileValidation.image, ...Cloud_Upload_1.fileValidation.videos, ...Cloud_Upload_1.fileValidation.documents, ...Cloud_Upload_1.fileValidation.audios,]).array("attachment", 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
+postRouter.post("/create-post", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, Cloud_Upload_1.cloudUpload)([
+    ...Cloud_Upload_1.fileValidation.image,
+    ...Cloud_Upload_1.fileValidation.videos,
+    ...Cloud_Upload_1.fileValidation.documents,
+    ...Cloud_Upload_1.fileValidation.audios,
+]).array("attachment", 5), (0, validation_1.isValid)(postValidation.createPostVal), (0, asyncHandler_1.asyncHandler)(postService.createPost));
 //like or unlike
 postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.likeOrUnlike), (0, asyncHandler_1.asyncHandler)(postService.likeOrUnlike));
 // get posts
 postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
+//get specific post
+postRouter.get("/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.getSpecificPost), (0, asyncHandler_1.asyncHandler)(postService.getSpecificPost));
 exports.default = postRouter;
