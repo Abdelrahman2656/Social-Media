@@ -134,7 +134,7 @@ const getPosts = async (req, res, next) => {
     const TotalPost = await post_model_1.Post.countDocuments();
     const postsWithShare = posts.map(p => ({
         ...p,
-        shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal-vercel.app/"}api/v1/post/${p._id}`
+        shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${p._id}`
     }));
     //send response
     return res.status(200).json({ success: true, postData: postsWithShare, TotalPost });
