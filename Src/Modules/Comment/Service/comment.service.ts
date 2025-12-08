@@ -11,7 +11,7 @@ export const createComment = async (
   next: AppNext
 ) => {
   //get data from req
-  const { postId } = req.params;
+  const { postId ,id} = req.params;
   const { text } = req.body;
   console.log("BODY:", req.body);
   console.log("FILES:", req.files);
@@ -74,6 +74,7 @@ export const createComment = async (
     text,
     attachment,
     voice,
+    parentComment:id
   });
   //save to db
   const commentCreated = await comment.save();

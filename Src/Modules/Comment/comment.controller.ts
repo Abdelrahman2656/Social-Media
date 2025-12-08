@@ -8,9 +8,9 @@ import { roles } from "../../Utils/constant/enum";
 import * as commentValidation from "./comment.validation";
 import * as commentService from "./Service/comment.service";
 const commentRouter = Router({ mergeParams: true });
-//create comment
+//create comment and reply
 commentRouter.post(
-  "/",
+  "/:id?",
   isAuthentication,
   isAuthorization([roles.USER, roles.ADMIN]),
   cloudUpload([

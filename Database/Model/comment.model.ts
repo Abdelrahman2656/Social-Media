@@ -18,7 +18,8 @@ interface IComment {
     text:string
     attachment?:Attachment
     likes:mongoose.Types.ObjectId[]
-    voice?:IAttachment
+    voice?:IAttachment,
+    parentComment:mongoose.Types.ObjectId
 }
 //schema 
 const commentSchema = new Schema<IComment>({
@@ -71,7 +72,11 @@ const commentSchema = new Schema<IComment>({
         type:Schema.Types.ObjectId,
         ref:"User",
 
-    }]
+    }],
+    parentComment:{
+type:Schema.Types.ObjectId,
+ref:"Comment"
+    }
 },{
     timestamps:true
 })

@@ -3,6 +3,7 @@ import { generalFields } from "../../Utils/generalFields/generalFields";
 
 //create comment 
 export const createComment = joi.object({
+    id:generalFields.objectId,
     postId:generalFields.objectId.required(),
     text:generalFields.text.required(),
 attachment:generalFields.image.when("text",{
