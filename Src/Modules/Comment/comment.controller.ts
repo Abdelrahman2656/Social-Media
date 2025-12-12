@@ -34,4 +34,12 @@ commentRouter.get(
   isValid(commentValidation.getComment),
   asyncHandler(commentService.getComment)
 );
+// delete comment
+commentRouter.delete(
+  ":/id",
+  isAuthentication,
+  isAuthorization([roles.USER]),
+  isValid(commentValidation.deleteComment),
+  asyncHandler(commentService.deleteComment)
+);
 export default commentRouter;

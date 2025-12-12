@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getComment = exports.createComment = void 0;
+exports.deleteComment = exports.getComment = exports.createComment = void 0;
 const joi_1 = __importDefault(require("joi"));
 const generalFields_1 = require("../../Utils/generalFields/generalFields");
 //create comment 
@@ -21,5 +21,10 @@ exports.createComment = joi_1.default.object({
 //get comment
 exports.getComment = joi_1.default.object({
     id: generalFields_1.generalFields.objectId,
+    postId: generalFields_1.generalFields.objectId.required()
+}).required();
+//delete comment 
+exports.deleteComment = joi_1.default.object({
+    id: generalFields_1.generalFields.objectId.required(),
     postId: generalFields_1.generalFields.objectId.required()
 }).required();

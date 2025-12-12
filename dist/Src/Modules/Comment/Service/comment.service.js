@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getComment = exports.createComment = void 0;
+exports.deleteComment = exports.getComment = exports.createComment = void 0;
 const Database_1 = require("../../../../Database");
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
@@ -74,6 +74,7 @@ const createComment = async (req, res, next) => {
     //save to db
     const commentCreated = await comment.save();
     if (!commentCreated) {
+        req.failImages = failImages;
         return next(new AppError_1.AppError(messages_1.messages.comment.failToCreate, 500));
     }
     //save response
@@ -111,3 +112,32 @@ const getComment = async (req, res, next) => {
     return res.status(200).json({ success: true, TotalComment, commentData });
 };
 exports.getComment = getComment;
+//---------------------------------------------------Delete Comment--------------------------------------------------------------
+const deleteComment = async (req, res, next) => {
+    //get data from req 
+    const { id, postId } = req.params;
+    const userId = req.authUser?._id;
+    //check if comment existence 
+    const comment = await Database_1.Comment.findOne({ _id: id, post: postId }).populate([
+        { path: "post", select: "publisher" }
+    ]);
+    if (!comment) {
+        return next(new AppError_1.AppError(messages_1.messages.comment.notFound, 404));
+    }
+    //check if user owner comment or post 
+    if (![comment?.userComment.toString(), (comment?.post).publisher?.toString()].includes(userId?.toString())) {
+        return next(new AppError_1.AppError(messages_1.messages.comment.notAllowed, 401));
+    }
+    //delete attachment from cloud if exist 
+    if (comment.attachment?.public_id) {
+        await cloud_1.default.uploader.destroy(comment.attachment.public_id);
+    }
+    //* delete comment from db 
+    const deleteComment = await comment.deleteOne();
+    if (!deleteComment) {
+        return next(new AppError_1.AppError(messages_1.messages.comment.failToDelete, 500));
+    }
+    //send response 
+    return res.status(200).json({ message: messages_1.messages.comment.deleteSuccessfully, success: true, deleteComment });
+};
+exports.deleteComment = deleteComment;

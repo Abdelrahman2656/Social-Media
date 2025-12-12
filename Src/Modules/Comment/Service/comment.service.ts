@@ -81,6 +81,7 @@ export const createComment = async (
   //save to db
   const commentCreated = await comment.save();
   if (!commentCreated) {
+    req.failImages = failImages;
     return next(new AppError(messages.comment.failToCreate, 500));
   }
   //save response
@@ -120,3 +121,31 @@ export const getComment = async (
   //send response
   return res.status(200).json({ success: true, TotalComment, commentData });
 };
+//---------------------------------------------------Delete Comment--------------------------------------------------------------
+export const deleteComment =async(req:AppRequest,res:AppResponse,next:AppNext)=>{
+  //get data from req 
+  const {id,postId}=req.params
+  const userId= req.authUser?._id
+  //check if comment existence 
+  const comment = await Comment.findOne({_id:id , post:postId}).populate([
+    {path:"post",select:"publisher"}
+  ])
+  if(!comment){
+    return next(new AppError(messages.comment.notFound,404))
+  }
+  //check if user owner comment or post 
+  if(![comment?.userComment.toString(),(comment?.post as any).publisher?.toString()].includes(userId?.toString())){
+  return next(new AppError(messages.comment.notAllowed,401))
+  }
+  //delete attachment from cloud if exist 
+  if(comment.attachment?.public_id){
+  await cloudinary.uploader.destroy(comment.attachment.public_id)
+  }
+  //* delete comment from db 
+  const deleteComment  = await comment.deleteOne()
+  if(!deleteComment){
+  return next(new AppError(messages.comment.failToDelete,500))
+  }
+  //send response 
+  return res.status(200).json({message:messages.comment.deleteSuccessfully, success :true , deleteComment})
+}

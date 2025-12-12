@@ -18,3 +18,8 @@ export const getComment =joi.object({
     id:generalFields.objectId,
     postId:generalFields.objectId.required()
 }).required()
+//delete comment 
+export const deleteComment = joi.object({
+    id:generalFields.objectId.required(),
+    postId:generalFields.objectId.required()
+}).required()

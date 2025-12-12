@@ -1,4 +1,5 @@
-import mongoose, { model, Schema, Types } from "mongoose";
+import mongoose, { model, Mongoose, Schema, Types } from "mongoose";
+import cloudinary from "../../Src/Utils/Cloud-Upload/cloud";
 interface Attachment{
  secure_url:string,
  public_id:string,
@@ -79,6 +80,24 @@ ref:"Comment"
     }
 },{
     timestamps:true
+})
+//mongoose hook to delete replies 
+commentSchema.post("deleteOne",{document:true , query :false},async function(doc , next){
+//check replies related comment
+const CommentModel = this.constructor as mongoose.Model<IComment>;
+
+const replies = await CommentModel.find({parentComment:doc._id})
+if(replies.length > 0){
+    for (const reply of replies) {
+        //delete attachment from cloud 
+        if(reply.attachment?.public_id){
+            await cloudinary.uploader.destroy(reply.attachment.public_id)
+        }
+        //delete reply from db 
+        await reply.deleteOne()
+    }
+}
+next()
 })
 //model 
 export const Comment = model<IComment>("Comment",commentSchema)
