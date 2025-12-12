@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
+exports.deletePost = exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
 const post_model_1 = require("../../../../Database/Model/post.model");
@@ -161,3 +161,32 @@ const getSpecificPost = async (req, res, next) => {
     return res.status(200).json({ success: true, post, shareLink });
 };
 exports.getSpecificPost = getSpecificPost;
+//---------------------------------------------------Delete Posts--------------------------------------------------------------
+const deletePost = async (req, res, next) => {
+    //get data from req 
+    const { id } = req.params;
+    const userId = req.authUser?._id;
+    // find post and delete 
+    const post = await post_model_1.Post.findOneAndDelete({ _id: id, publisher: userId }).populate([
+        { path: "comments", match: { parentComment: { $exists: false } }, select: "_id attachment " }
+    ]);
+    //post wrong id or not owner post
+    if (!post) {
+        return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
+    }
+    //delete attachment post from cloud
+    for (const posts of post.attachment) {
+        await cloud_1.default.uploader.destroy(posts.public_id);
+    }
+    //delete comment related to post
+    const populatedPost = post;
+    for (const comment of populatedPost.comments) {
+        if (comment.attachment.public_id) {
+            await cloud_1.default.uploader.destroy(comment.attachment.public_id);
+        }
+        await comment.deleteOne();
+    }
+    //send response 
+    return res.status(200).json({ message: messages_1.messages.post.deleteSuccessfully, success: true, post });
+};
+exports.deletePost = deletePost;

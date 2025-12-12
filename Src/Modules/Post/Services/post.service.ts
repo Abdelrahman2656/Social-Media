@@ -168,3 +168,31 @@ const shareLink =`${process.env.BASE_URL || "https://social-media-iota-teal.verc
 //send response 
 return res.status(200).json({success:true , post ,shareLink})
 }
+//---------------------------------------------------Delete Posts--------------------------------------------------------------
+export const deletePost = async(req:AppRequest,res:AppResponse , next:AppNext)=>{
+  //get data from req 
+  const {id}= req.params
+  const userId = req.authUser?._id
+  // find post and delete 
+  const post =await Post.findOneAndDelete({_id:id , publisher:userId}).populate([
+    {path:"comments", match:{parentComment:{$exists:false}}, select:"_id attachment "}
+  ])
+  //post wrong id or not owner post
+  if(!post){
+    return next(new AppError(messages.post.notFound,404))
+  }
+  //delete attachment post from cloud
+  for (const posts of post.attachment) {
+    await cloudinary.uploader.destroy(posts.public_id)
+  }
+  //delete comment related to post
+  const populatedPost = post as any;
+  for (const comment of populatedPost.comments) {
+    if(comment.attachment.public_id){
+      await cloudinary.uploader.destroy(comment.attachment.public_id)
+    }
+    await comment.deleteOne()
+  }
+  //send response 
+  return res.status(200).json({message:messages.post.deleteSuccessfully , success:true , post})
+}

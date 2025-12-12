@@ -48,4 +48,6 @@ postRouter.get(
   isValid(postValidation.getSpecificPost),
   asyncHandler(postService.getSpecificPost)
 );
+//delete posts
+postRouter.delete("/:id",isAuthentication , isAuthorization([roles.USER]),isValid(postValidation.deletePost),asyncHandler(postService.deletePost))
 export default postRouter;

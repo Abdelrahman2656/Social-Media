@@ -62,4 +62,6 @@ postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (
 postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
 //get specific post
 postRouter.get("/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.getSpecificPost), (0, asyncHandler_1.asyncHandler)(postService.getSpecificPost));
+//delete posts
+postRouter.delete("/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.deletePost), (0, asyncHandler_1.asyncHandler)(postService.deletePost));
 exports.default = postRouter;

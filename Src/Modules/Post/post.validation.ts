@@ -17,3 +17,7 @@ userId:generalFields.objectId.required()
 export const getSpecificPost = joi.object({
     id:generalFields.objectId.required()
 }).required() 
+// delete post
+export const deletePost =joi.object({
+    id:generalFields.objectId.required()
+}).required()
