@@ -21,3 +21,12 @@ export const getSpecificPost = joi.object({
 export const deletePost =joi.object({
     id:generalFields.objectId.required()
 }).required()
+//archive post
+export const archivePost =joi.object({
+    id:generalFields.objectId.required()
+}).required()
+//restore post
+export const restorePost =joi.object({
+    id:generalFields.objectId.required()
+}).required()
+

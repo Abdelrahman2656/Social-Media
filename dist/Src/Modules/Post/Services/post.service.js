@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePost = exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
+exports.restorePost = exports.archivePost = exports.deletePost = exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
 const post_model_1 = require("../../../../Database/Model/post.model");
@@ -190,3 +190,31 @@ const deletePost = async (req, res, next) => {
     return res.status(200).json({ message: messages_1.messages.post.deleteSuccessfully, success: true, post });
 };
 exports.deletePost = deletePost;
+//---------------------------------------------------Archive Posts--------------------------------------------------------------
+const archivePost = async (req, res, next) => {
+    //get data from req
+    const { id } = req.params;
+    const userId = req.authUser?._id;
+    // find post and update 
+    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: false }, { isDeleted: true });
+    if (!post) {
+        return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
+    }
+    //send response
+    return res.status(200).json({ message: messages_1.messages.post.archivedSuccessfully, success: true, post });
+};
+exports.archivePost = archivePost;
+//---------------------------------------------------Restore Posts--------------------------------------------------------------
+const restorePost = async (req, res, next) => {
+    //get data from req
+    const { id } = req.params;
+    const userId = req.authUser?._id;
+    // find post and update 
+    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: true }, { isDeleted: false });
+    if (!post) {
+        return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
+    }
+    //send response
+    return res.status(200).json({ message: messages_1.messages.post.restoredSuccessfully, success: true, post });
+};
+exports.restorePost = restorePost;

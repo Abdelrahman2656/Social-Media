@@ -9,6 +9,8 @@ const generateMessage = (entity :string) => ({
     deleteSuccessfully: `${entity} Deleted Successfully`,
     notAllowed: `${entity} Not Authorized To Access This Api`,
     verifiedSuccessfully: `${entity} Verified Successfully`,
+    archivedSuccessfully: `${entity} Archived Successfully`,
+    restoredSuccessfully: `${entity} Restored Successfully`,
   });
   export const messages = {
 

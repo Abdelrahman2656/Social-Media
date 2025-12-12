@@ -127,7 +127,7 @@ export const deleteComment =async(req:AppRequest,res:AppResponse,next:AppNext)=>
   const {id,postId}=req.params
   const userId= req.authUser?._id
   //check if comment existence 
-  const comment = await Comment.findOne({_id:id , post:postId}).populate([
+  const comment = await Comment.findOne({_id:id , post:postId} ).populate([
     {path:"post",select:"publisher"}
   ])
   if(!comment){

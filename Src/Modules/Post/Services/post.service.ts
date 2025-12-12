@@ -196,3 +196,29 @@ export const deletePost = async(req:AppRequest,res:AppResponse , next:AppNext)=>
   //send response 
   return res.status(200).json({message:messages.post.deleteSuccessfully , success:true , post})
 }
+//---------------------------------------------------Archive Posts--------------------------------------------------------------
+export const archivePost = async(req:AppRequest , res:AppResponse , next:AppNext)=>{
+//get data from req
+const {id}= req.params
+const userId = req.authUser?._id
+// find post and update 
+const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:false},{isDeleted:true})
+if(!post){
+  return next(new AppError(messages.post.notFound,404))
+}
+//send response
+return res.status(200).json({message:messages.post.archivedSuccessfully , success:true , post})
+}
+//---------------------------------------------------Restore Posts--------------------------------------------------------------
+export const restorePost = async(req:AppRequest , res:AppResponse , next:AppNext)=>{
+  //get data from req
+const {id}= req.params
+const userId = req.authUser?._id
+// find post and update 
+const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:true},{isDeleted:false})
+if(!post){
+  return next(new AppError(messages.post.notFound,404))
+}
+//send response
+return res.status(200).json({message:messages.post.restoredSuccessfully , success:true , post})
+}

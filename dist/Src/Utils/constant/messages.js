@@ -12,6 +12,8 @@ const generateMessage = (entity) => ({
     deleteSuccessfully: `${entity} Deleted Successfully`,
     notAllowed: `${entity} Not Authorized To Access This Api`,
     verifiedSuccessfully: `${entity} Verified Successfully`,
+    archivedSuccessfully: `${entity} Archived Successfully`,
+    restoredSuccessfully: `${entity} Restored Successfully`,
 });
 exports.messages = {
     user: {
