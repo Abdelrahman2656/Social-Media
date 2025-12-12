@@ -57,5 +57,5 @@ commentRouter.post("/:id?", authentication_1.isAuthentication, (0, authorization
 //post/postId/comment
 commentRouter.get("/:id?", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER, enum_1.roles.ADMIN]), (0, validation_1.isValid)(commentValidation.getComment), (0, asyncHandler_1.asyncHandler)(commentService.getComment));
 // delete comment
-commentRouter.delete(":/id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(commentValidation.deleteComment), (0, asyncHandler_1.asyncHandler)(commentService.deleteComment));
+commentRouter.delete("/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(commentValidation.deleteComment), (0, asyncHandler_1.asyncHandler)(commentService.deleteComment));
 exports.default = commentRouter;

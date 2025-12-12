@@ -36,7 +36,7 @@ commentRouter.get(
 );
 // delete comment
 commentRouter.delete(
-  ":/id",
+  "/:id",
   isAuthentication,
   isAuthorization([roles.USER]),
   isValid(commentValidation.deleteComment),
