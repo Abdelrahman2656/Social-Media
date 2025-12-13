@@ -133,7 +133,7 @@ const getPosts = async (req, res, next) => {
         },
     ]);
     //total post
-    const TotalPost = await post_model_1.Post.countDocuments();
+    const TotalPost = await post_model_1.Post.countDocuments({ isDeleted: false });
     const postsWithShare = posts.map(p => ({
         ...p,
         timeAgo: (0, dayjs_1.default)(p.createdAt).fromNow(),
