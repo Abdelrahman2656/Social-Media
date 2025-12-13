@@ -9,6 +9,7 @@ const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
 const post_model_1 = require("../../../../Database/Model/post.model");
 const messages_1 = require("../../../Utils/constant/messages");
 const mongoose_1 = require("mongoose");
+const dayjs_1 = __importDefault(require("dayjs"));
 //---------------------------------------------------Create Post--------------------------------------------------------------
 const createPost = async (req, res, next) => {
     //get data from req
@@ -123,6 +124,7 @@ const getPosts = async (req, res, next) => {
                 "publisher.attachment.secure_url": 1,
                 "attachment.secure_url": 1,
                 content: 1,
+                createdAt: 1,
                 "likes.firstName": 1,
                 "likes.lastName": 1,
                 "likes.attachment.secure_url": 1,
@@ -134,6 +136,8 @@ const getPosts = async (req, res, next) => {
     const TotalPost = await post_model_1.Post.countDocuments();
     const postsWithShare = posts.map(p => ({
         ...p,
+        timeAgo: (0, dayjs_1.default)(p.createdAt).fromNow(),
+        createdAtFormatted: (0, dayjs_1.default)(p.createdAt).format("dddd DD MMMM YYYY • h:mm A"),
         shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${p._id}`
     }));
     //send response
@@ -150,7 +154,7 @@ const getSpecificPost = async (req, res, next) => {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
     //get post 
-    const post = await post_model_1.Post.findById(id).populate([
+    const post = await post_model_1.Post.findOne({ _id: id, isDeleted: false }).populate([
         { path: "publisher", select: "firstName lastName attachment.secure_url" },
         { path: "likes", select: "firstName lastName attachment.secure_url " },
         { path: "comments", match: { parentComment: { $exists: false } } }

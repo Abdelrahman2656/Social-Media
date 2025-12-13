@@ -4,6 +4,7 @@ import cloudinary from "../../../Utils/Cloud-Upload/cloud";
 import { Post } from "../../../../Database/Model/post.model";
 import { messages } from "../../../Utils/constant/messages";
 import { Types } from "mongoose";
+import dayjs from "dayjs";
 //---------------------------------------------------Create Post--------------------------------------------------------------
 export const createPost = async (
   req: AppRequest,
@@ -132,6 +133,7 @@ export const getPosts = async (
         "publisher.attachment.secure_url": 1,
         "attachment.secure_url": 1,
         content: 1,
+        createdAt:1,
         "likes.firstName": 1,
         "likes.lastName": 1,
         "likes.attachment.secure_url": 1,
@@ -143,6 +145,8 @@ export const getPosts = async (
     const TotalPost = await Post.countDocuments();
 const postsWithShare = posts.map(p => ({
   ...p,
+   timeAgo: dayjs(p.createdAt).fromNow(),
+  createdAtFormatted: dayjs(p.createdAt).format("dddd DD MMMM YYYY • h:mm A"),
   shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${p._id}`
 }));
   //send response
@@ -158,7 +162,7 @@ if(!postExistence){
 return next(new AppError(messages.post.notFound,404))
 }
 //get post 
-const post = await Post.findById(id).populate([
+const post = await Post.findOne({_id:id , isDeleted:false}).populate([
  {path :"publisher" , select:"firstName lastName attachment.secure_url"},
   {path:"likes" , select:"firstName lastName attachment.secure_url "},
   {path:"comments",match:{parentComment:{$exists:false}}}
