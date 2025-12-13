@@ -206,7 +206,7 @@ export const archivePost = async(req:AppRequest , res:AppResponse , next:AppNext
 const {id}= req.params
 const userId = req.authUser?._id
 // find post and update 
-const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:false},{isDeleted:true},{upsert:true})
+const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:false},{isDeleted:true},{ new: true })
 if(!post){
   return next(new AppError(messages.post.notFound,404))
 }
@@ -219,7 +219,7 @@ export const restorePost = async(req:AppRequest , res:AppResponse , next:AppNext
 const {id}= req.params
 const userId = req.authUser?._id
 // find post and update 
-const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:true},{isDeleted:false},{upsert:true})
+const post = await Post.findOneAndUpdate({_id:id , publisher:userId , isDeleted:true},{isDeleted:false},{ new: true })
 if(!post){
   return next(new AppError(messages.post.notFound,404))
 }
