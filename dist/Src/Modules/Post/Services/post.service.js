@@ -200,7 +200,7 @@ const archivePost = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.authUser?._id;
     // find post and update 
-    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: false }, { isDeleted: true });
+    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: false }, { isDeleted: true }, { upsert: true });
     if (!post) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
@@ -214,7 +214,7 @@ const restorePost = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.authUser?._id;
     // find post and update 
-    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: true }, { isDeleted: false });
+    const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: true }, { isDeleted: false }, { upsert: true });
     if (!post) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
