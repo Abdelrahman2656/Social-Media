@@ -58,7 +58,7 @@ postRouter.delete(
 );
 //archive post
 postRouter.patch(
-  "/:id",
+  "/archive/:id",
   isAuthentication,
   isAuthorization([roles.USER]),
   isValid(postValidation.archivePost),
@@ -66,7 +66,7 @@ postRouter.patch(
 );
 //restore post
 postRouter.patch(
-  "/:id",
+  "/restore/:id",
   isAuthentication,
   isAuthorization([roles.USER]),
   isValid(postValidation.restorePost),
