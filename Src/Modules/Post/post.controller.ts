@@ -72,4 +72,11 @@ postRouter.patch(
   isValid(postValidation.restorePost),
   asyncHandler(postService.restorePost)
 );
+// get posts
+postRouter.get(
+  "/All-Posts",
+  
+  isAuthorization([roles.USER]),
+  asyncHandler(postService.getPosts)
+);
 export default postRouter;

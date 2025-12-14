@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import "dayjs/locale/ar";
 import relativeTime from "dayjs/plugin/relativeTime";
-import mongoose, { model, Schema } from "mongoose";
-
+import mongoose, { model, PaginateModel, Schema } from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 //time
 dayjs.extend(relativeTime)
 dayjs.locale("ar")
@@ -68,5 +68,7 @@ postSchema.virtual("timeAgo").get(function () {
 postSchema.virtual("createdAtFormatted").get(function () {
   return dayjs(this.createdAt!).format("dddd DD MMMM YYYY • h:mm A");
 });
+//pagination
+postSchema.plugin(mongoosePaginate)
 //model
-export const Post = model<IPost>('Post',postSchema)
+export const Post = model<IPost, PaginateModel<IPost>>('Post',postSchema)

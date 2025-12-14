@@ -8,6 +8,7 @@ const dayjs_1 = __importDefault(require("dayjs"));
 require("dayjs/locale/ar");
 const relativeTime_1 = __importDefault(require("dayjs/plugin/relativeTime"));
 const mongoose_1 = require("mongoose");
+const mongoose_paginate_v2_1 = __importDefault(require("mongoose-paginate-v2"));
 //time
 dayjs_1.default.extend(relativeTime_1.default);
 dayjs_1.default.locale("ar");
@@ -55,5 +56,7 @@ postSchema.virtual("timeAgo").get(function () {
 postSchema.virtual("createdAtFormatted").get(function () {
     return (0, dayjs_1.default)(this.createdAt).format("dddd DD MMMM YYYY • h:mm A");
 });
+//pagination
+postSchema.plugin(mongoose_paginate_v2_1.default);
 //model
 exports.Post = (0, mongoose_1.model)('Post', postSchema);

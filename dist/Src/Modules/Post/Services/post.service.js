@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.restorePost = exports.archivePost = exports.deletePost = exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
+exports.getPostsPaginate = exports.restorePost = exports.archivePost = exports.deletePost = exports.getSpecificPost = exports.getPosts = exports.likeOrUnlike = exports.createPost = void 0;
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
 const post_model_1 = require("../../../../Database/Model/post.model");
@@ -128,51 +128,60 @@ const getPosts = async (req, res, next) => {
                 "likes.firstName": 1,
                 "likes.lastName": 1,
                 "likes.attachment.secure_url": 1,
-                comments: 1
+                comments: 1,
             },
         },
     ]);
     //total post
     const TotalPost = await post_model_1.Post.countDocuments({ isDeleted: false });
-    const postsWithShare = posts.map(p => ({
+    const postsWithShare = posts.map((p) => ({
         ...p,
         timeAgo: (0, dayjs_1.default)(p.createdAt).fromNow(),
         createdAtFormatted: (0, dayjs_1.default)(p.createdAt).format("dddd DD MMMM YYYY • h:mm A"),
-        shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${p._id}`
+        shareLink: `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${p._id}`,
     }));
     //send response
-    return res.status(200).json({ success: true, postData: postsWithShare, TotalPost });
+    return res
+        .status(200)
+        .json({ success: true, postData: postsWithShare, TotalPost });
 };
 exports.getPosts = getPosts;
 //---------------------------------------------------Get Specific Posts--------------------------------------------------------------
 const getSpecificPost = async (req, res, next) => {
-    //get data from  params 
+    //get data from  params
     const { id } = req.params;
-    //check post Existence 
+    //check post Existence
     const postExistence = await post_model_1.Post.findById(id);
     if (!postExistence) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
-    //get post 
+    //get post
     const post = await post_model_1.Post.findOne({ _id: id, isDeleted: false }).populate([
         { path: "publisher", select: "firstName lastName attachment.secure_url" },
         { path: "likes", select: "firstName lastName attachment.secure_url " },
-        { path: "comments", match: { parentComment: { $exists: false } } }
+        { path: "comments", match: { parentComment: { $exists: false } } },
     ]);
     //share link
     const shareLink = `${process.env.BASE_URL || "https://social-media-iota-teal.vercel.app/"}api/v1/post/${postExistence.id}`;
-    //send response 
+    //send response
     return res.status(200).json({ success: true, post, shareLink });
 };
 exports.getSpecificPost = getSpecificPost;
 //---------------------------------------------------Delete Posts--------------------------------------------------------------
 const deletePost = async (req, res, next) => {
-    //get data from req 
+    //get data from req
     const { id } = req.params;
     const userId = req.authUser?._id;
-    // find post and delete 
-    const post = await post_model_1.Post.findOneAndDelete({ _id: id, publisher: userId }).populate([
-        { path: "comments", match: { parentComment: { $exists: false } }, select: "_id attachment " }
+    // find post and delete
+    const post = await post_model_1.Post.findOneAndDelete({
+        _id: id,
+        publisher: userId,
+    }).populate([
+        {
+            path: "comments",
+            match: { parentComment: { $exists: false } },
+            select: "_id attachment ",
+        },
     ]);
     //post wrong id or not owner post
     if (!post) {
@@ -190,8 +199,10 @@ const deletePost = async (req, res, next) => {
         }
         await comment.deleteOne();
     }
-    //send response 
-    return res.status(200).json({ message: messages_1.messages.post.deleteSuccessfully, success: true, post });
+    //send response
+    return res
+        .status(200)
+        .json({ message: messages_1.messages.post.deleteSuccessfully, success: true, post });
 };
 exports.deletePost = deletePost;
 //---------------------------------------------------Archive Posts--------------------------------------------------------------
@@ -199,13 +210,15 @@ const archivePost = async (req, res, next) => {
     //get data from req
     const { id } = req.params;
     const userId = req.authUser?._id;
-    // find post and update 
+    // find post and update
     const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: false }, { isDeleted: true }, { new: true });
     if (!post) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
     //send response
-    return res.status(200).json({ message: messages_1.messages.post.archivedSuccessfully, success: true, post });
+    return res
+        .status(200)
+        .json({ message: messages_1.messages.post.archivedSuccessfully, success: true, post });
 };
 exports.archivePost = archivePost;
 //---------------------------------------------------Restore Posts--------------------------------------------------------------
@@ -213,12 +226,39 @@ const restorePost = async (req, res, next) => {
     //get data from req
     const { id } = req.params;
     const userId = req.authUser?._id;
-    // find post and update 
+    // find post and update
     const post = await post_model_1.Post.findOneAndUpdate({ _id: id, publisher: userId, isDeleted: true }, { isDeleted: false }, { new: true });
     if (!post) {
         return next(new AppError_1.AppError(messages_1.messages.post.notFound, 404));
     }
     //send response
-    return res.status(200).json({ message: messages_1.messages.post.restoredSuccessfully, success: true, post });
+    return res
+        .status(200)
+        .json({ message: messages_1.messages.post.restoredSuccessfully, success: true, post });
 };
 exports.restorePost = restorePost;
+//---------------------------------------------------Get Posts Pagination--------------------------------------------------------------
+const getPostsPaginate = async (req, res, next) => {
+    //get data from req
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    //find post
+    const posts = await post_model_1.Post.paginate({ isDeleted: false }, {
+        page,
+        limit,
+        customLabels: {
+            totalDocs: "TotalPosts",
+            docs: "PostsData",
+        },
+        populate: [
+            {
+                path: "publisher",
+                select: "firstName lastName attachment.secure_url",
+            },
+            { path: "likes", select: "firstName lastName attachment.secure_url " },
+        ],
+    });
+    //send response
+    return res.status(200).json({ success: true, posts });
+};
+exports.getPostsPaginate = getPostsPaginate;
