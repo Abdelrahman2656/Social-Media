@@ -84,7 +84,11 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
-    userCode: { type: String, unique: true },
+    userCode: {
+        type: String,
+        unique: true,
+        required: true
+    },
     isDeleted: {
         type: Boolean,
         default: false,

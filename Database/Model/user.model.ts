@@ -106,7 +106,11 @@ const userSchema = new Schema<UserDocument>({
     type: Boolean,
     default: false,
   },
-userCode: { type: String, unique: true },
+userCode: {
+  type: String,
+  unique: true,
+  required: true
+},
   isDeleted: {
     type: Boolean,
     default: false,
