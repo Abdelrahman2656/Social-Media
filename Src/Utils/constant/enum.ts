@@ -3,11 +3,13 @@
 //user roles
 interface Roles {
     USER:string,
-    ADMIN:string
+    ADMIN:string,
+    SUPERADMIN:string
 }
 export const roles:Roles={
     USER:'user',
-    ADMIN:"admin"
+    ADMIN:"admin",
+    SUPERADMIN:"superAdmin"
 
 }
 Object.freeze(roles)

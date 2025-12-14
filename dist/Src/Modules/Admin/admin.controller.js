@@ -34,12 +34,16 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const adminValidation = __importStar(require("./admin.validation"));
 const adminService = __importStar(require("./Service/admin.service"));
 const authentication_1 = require("../../Middleware/authentication");
 const authorization_1 = require("../../Middleware/authorization");
 const enum_1 = require("../../Utils/constant/enum");
 const asyncHandler_1 = require("../../Middleware/asyncHandler");
+const validation_1 = require("../../Middleware/validation");
 const adminRouter = (0, express_1.Router)();
 //get data
 adminRouter.get("/data", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.ADMIN]), (0, asyncHandler_1.asyncHandler)(adminService.getData));
+//update role
+adminRouter.patch("/dashboard/updateRole/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.ADMIN, enum_1.roles.SUPERADMIN]), (0, validation_1.isValid)(adminValidation.updateRole), (0, asyncHandler_1.asyncHandler)(adminService.updateRole));
 exports.default = adminRouter;

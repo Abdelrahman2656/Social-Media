@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.providers = exports.roles = void 0;
 exports.roles = {
     USER: 'user',
-    ADMIN: "admin"
+    ADMIN: "admin",
+    SUPERADMIN: "superAdmin"
 };
 Object.freeze(exports.roles);
 exports.providers = {
