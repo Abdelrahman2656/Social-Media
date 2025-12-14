@@ -8,5 +8,6 @@ const joi_1 = __importDefault(require("joi"));
 const generalFields_1 = require("../../Utils/generalFields/generalFields");
 //update tole
 exports.updateRole = joi_1.default.object({
-    userId: generalFields_1.generalFields.objectId.required()
+    userId: generalFields_1.generalFields.objectId.required(),
+    role: generalFields_1.generalFields.role.required()
 }).required();
