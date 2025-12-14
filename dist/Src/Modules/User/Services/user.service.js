@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -44,6 +11,7 @@ const enum_1 = require("../../../Utils/constant/enum");
 const messages_1 = require("../../../Utils/constant/messages");
 const emailEvent_1 = require("../../../Utils/Email/emailEvent");
 const encryption_1 = require("../../../Utils/encryption");
+const userCode_1 = require("../../../Utils/generateUserCode/userCode");
 const otp_1 = require("../../../Utils/otp");
 const token_1 = require("../../../Utils/Token/token");
 const verifyGoogle_1 = require("../../../Utils/verifyGoogle/verifyGoogle");
@@ -59,9 +27,7 @@ const signUp = async (req, res, next) => {
         // fallback safe guard
         return next(new AppError_1.AppError("Something went wrong with the file upload", 400));
     }
-    const { customAlphabet } = await Promise.resolve().then(() => __importStar(require('nanoid')));
-    const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
-    const userCode = generateCustomCode();
+    const userCode = (0, userCode_1.generateUserCode)();
     let { secure_url, public_id } = await cloud_1.default.uploader.upload(req.file.path, {
         folder: `Social-Media/Users/Profile/${userCode}`
     });

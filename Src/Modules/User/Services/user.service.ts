@@ -7,6 +7,7 @@ import { providers } from "../../../Utils/constant/enum";
 import { messages } from "../../../Utils/constant/messages";
 import { generateAndSecondSendOTP, generateAndSendOTP, secondOTPForgetPassword, sendOTPForgetPassword } from "../../../Utils/Email/emailEvent";
 import { comparePassword, Encrypt, Hash } from "../../../Utils/encryption";
+import { generateUserCode } from "../../../Utils/generateUserCode/userCode";
 import { generateOTP } from "../../../Utils/otp";
 import { generateToken, verifyToken } from "../../../Utils/Token/token";
 import { AppNext, AppRequest, AppResponse } from "../../../Utils/type";
@@ -28,9 +29,7 @@ if (!req.file) {
   // fallback safe guard
   return next(new AppError("Something went wrong with the file upload", 400));
 }
-const { customAlphabet } = await import('nanoid');
-  const generateCustomCode = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
-const userCode = generateCustomCode();
+  const userCode = generateUserCode();
   let{secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
     folder:`Social-Media/Users/Profile/${userCode}`
   })
