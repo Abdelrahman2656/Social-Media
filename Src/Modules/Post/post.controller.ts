@@ -74,7 +74,7 @@ postRouter.patch(
 );
 // get posts
 postRouter.get(
-  "/All-Posts",
+  "/all-posts",
   isAuthentication,
   isAuthorization([roles.ADMIN,roles.SUPERADMIN,roles.USER]),
   asyncHandler(postService.getPostsPaginate)
