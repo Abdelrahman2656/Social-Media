@@ -69,5 +69,5 @@ postRouter.patch("/archive/:id", authentication_1.isAuthentication, (0, authoriz
 //restore post
 postRouter.patch("/restore/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.restorePost), (0, asyncHandler_1.asyncHandler)(postService.restorePost));
 // get posts
-postRouter.get("/All-Posts", (0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
+postRouter.get("/All-Posts", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.ADMIN, enum_1.roles.SUPERADMIN, enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
 exports.default = postRouter;
