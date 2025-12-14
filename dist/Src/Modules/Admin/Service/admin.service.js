@@ -26,7 +26,7 @@ const updateRole = async (req, res, next) => {
     const updatedById = req.authUser?._id;
     //Check user role
     const data = req.authUser?.role === enum_1.roles.SUPERADMIN
-        ? { roles: { $nin: enum_1.roles.SUPERADMIN } }
+        ? { roles: { $nin: [enum_1.roles.SUPERADMIN] } }
         : { roles: { $nin: [enum_1.roles.ADMIN, enum_1.roles.SUPERADMIN] } };
     // update role
     const user = await Database_1.User.findOneAndUpdate({ _id: userId, isDeleted: false, ...data }, { role, updatedBy: updatedById }, { new: true });

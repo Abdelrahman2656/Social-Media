@@ -32,7 +32,7 @@ export const updateRole = async (
   //Check user role
   const data =
     req.authUser?.role === roles.SUPERADMIN
-      ? { roles: { $nin: roles.SUPERADMIN } }
+      ? { roles: { $nin: [roles.SUPERADMIN] } }
       : { roles: { $nin: [roles.ADMIN, roles.SUPERADMIN] } };
 
   // update role
