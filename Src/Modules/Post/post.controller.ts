@@ -75,7 +75,7 @@ postRouter.patch(
 // get posts
 postRouter.get(
   "/all-posts",
-  isAuthentication,
+  
 
   asyncHandler(postService.getPostsPaginate)
 );
