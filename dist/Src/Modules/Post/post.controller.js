@@ -59,6 +59,8 @@ postRouter.post("/create-post", authentication_1.isAuthentication, (0, authoriza
 //like or unlike
 postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.likeOrUnlike), (0, asyncHandler_1.asyncHandler)(postService.likeOrUnlike));
 // get posts
+postRouter.get("/all-posts", (0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
+// get posts
 postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
 //get specific post
 postRouter.get("/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.getSpecificPost), (0, asyncHandler_1.asyncHandler)(postService.getSpecificPost));
@@ -68,6 +70,4 @@ postRouter.delete("/:id", authentication_1.isAuthentication, (0, authorization_1
 postRouter.patch("/archive/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.archivePost), (0, asyncHandler_1.asyncHandler)(postService.archivePost));
 //restore post
 postRouter.patch("/restore/:id", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.restorePost), (0, asyncHandler_1.asyncHandler)(postService.restorePost));
-// get posts
-postRouter.get("/all-posts", (0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
 exports.default = postRouter;
