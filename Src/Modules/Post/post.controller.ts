@@ -77,6 +77,6 @@ postRouter.get(
   "/All-Posts",
   
   
-  asyncHandler(postService.getPosts)
+  asyncHandler(postService.getPostsPaginate)
 );
 export default postRouter;
