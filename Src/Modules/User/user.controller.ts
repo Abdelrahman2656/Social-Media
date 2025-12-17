@@ -4,6 +4,7 @@ import { isValid } from "../../Middleware/validation";
 import * as US from './Services/user.service';
 import * as VA from './user.validation';
 import { cloudUpload, fileValidation } from "../../Utils/Cloud-Upload";
+import { isAuthentication } from "../../Middleware/authentication";
 const userRouter = Router()
 // sign up
 userRouter.post('/signup',cloudUpload([...fileValidation.image]).single("attachment"),isValid(VA.signUpVal),asyncHandler(US.signUp))
@@ -21,4 +22,8 @@ userRouter.post('/google-login',isValid(VA.loginWithGoogleVal),asyncHandler(US.l
 userRouter.post('/forget-password',isValid(VA.forgetPasswordVal),asyncHandler(US.forgetPassword))
 //change password 
 userRouter.put('/change-password',isValid(VA.changePasswordVal),asyncHandler(US.changePassword))
+//share Profile
+userRouter.get("/profile/:profileId",isAuthentication,isValid(VA.shareProfile),asyncHandler(US.shareProfile))
+//share Profile
+userRouter.get("/profile-qrcode/:profileId",isAuthentication,isValid(VA.shareProfileWithQrCode),asyncHandler(US.shareProfileWithQrCode))
 export default userRouter

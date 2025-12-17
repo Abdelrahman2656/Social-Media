@@ -97,6 +97,14 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: () => new Date().toISOString(),
     },
+    viewers: [
+        {
+            userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+            lastViews: [{ type: Date }],
+            count: { type: Number, default: 1 },
+            _id: false
+        }
+    ],
     otpEmail: String,
     expiredDateOtp: Date,
 });

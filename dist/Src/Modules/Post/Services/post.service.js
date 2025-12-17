@@ -257,6 +257,7 @@ const getPostsPaginate = async (req, res, next) => {
             },
             { path: "likes", select: "firstName lastName attachment.secure_url " },
         ],
+        lean: true
     });
     //send response
     return res.status(200).json({ success: true, posts });

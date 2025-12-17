@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import mongoose, { model, Schema, Types } from "mongoose";
 import { providers, roles } from "../../Src/Utils/constant/enum";
 import { Hash } from "../../Src/Utils/encryption";
 
@@ -22,7 +22,12 @@ interface IUser {
   provider: string;
   phone: String;
   attachment:Image[],
-  userCode:string
+  userCode:string,
+ viewers: {
+  userId: mongoose.Types.ObjectId;
+  lastViews: [Date];
+  count:number
+}[];
 }
 // Mongoose Document Type
 export interface UserDocument extends IUser, Document { _id: Schema.Types.ObjectId;}
@@ -119,6 +124,15 @@ userCode: {
     type: String,
     default: () => new Date().toISOString(),
   },
+  viewers:[
+{
+   userId:{type:Schema.Types.ObjectId , ref:"User"},
+ lastViews:[{type:Date}  ],
+  count:{type:Number , default:1},
+ 
+_id:false
+}
+  ],
   otpEmail: String,
   expiredDateOtp: Date,
 });

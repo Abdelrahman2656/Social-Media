@@ -296,6 +296,7 @@ export const getPostsPaginate = async (
         },
         { path: "likes", select: "firstName lastName attachment.secure_url " },
       ],
+      lean:true
     }
   );
   //send response

@@ -1,5 +1,12 @@
 import joi from "joi";
 import { roles } from "../constant/enum";
+import { Types } from "mongoose";
+import { error } from "node:console";
+//anther solution to check id
+export const checkObjectId = (value:any,helper:any)=>{
+  return Types.ObjectId.isValid(value)?true :helper.message("Invalid ObjectID")
+
+} 
 export const generalFields = {
   firstName: joi.string().max(15).min(3),
   lastName: joi.string().max(15).min(3),
@@ -21,6 +28,7 @@ export const generalFields = {
   text:joi.string().max(200),
   DOB: joi.string(),
   objectId: joi.string().hex().length(24),
+  profileId:joi.string().custom(checkObjectId),
   refreshToken: joi.string(),
   idToken: joi.string(),
   phone: joi

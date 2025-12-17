@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginWithGoogleVal = exports.changePasswordVal = exports.forgetPasswordVal = exports.refreshTokenVal = exports.signInVal = exports.confirmEmailVal = exports.signUpVal = void 0;
+exports.shareProfileWithQrCode = exports.shareProfile = exports.loginWithGoogleVal = exports.changePasswordVal = exports.forgetPasswordVal = exports.refreshTokenVal = exports.signInVal = exports.confirmEmailVal = exports.signUpVal = void 0;
 const enum_1 = require("../../Utils/constant/enum");
 const generalFields_1 = require("../../Utils/generalFields/generalFields");
 const joi_1 = __importDefault(require("joi"));
@@ -64,4 +64,12 @@ exports.changePasswordVal = joi_1.default.object({
 //login with google
 exports.loginWithGoogleVal = joi_1.default.object({
     idToken: generalFields_1.generalFields.idToken.required()
+}).required();
+//share profile 
+exports.shareProfile = joi_1.default.object({
+    profileId: generalFields_1.generalFields.profileId.required()
+}).required();
+//share profile with qrcode
+exports.shareProfileWithQrCode = joi_1.default.object({
+    profileId: generalFields_1.generalFields.profileId.required()
 }).required();

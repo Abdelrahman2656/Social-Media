@@ -59,7 +59,10 @@ postRouter.post("/create-post", authentication_1.isAuthentication, (0, authoriza
 //like or unlike
 postRouter.patch("/like-or-unlike/:userId", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, validation_1.isValid)(postValidation.likeOrUnlike), (0, asyncHandler_1.asyncHandler)(postService.likeOrUnlike));
 // get posts
-postRouter.get("/all-posts", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.ADMIN, enum_1.roles.SUPERADMIN, enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
+postRouter.get("/all-posts", 
+// isAuthentication,
+// isAuthorization([roles.ADMIN,roles.SUPERADMIN,roles.USER]),
+(0, asyncHandler_1.asyncHandler)(postService.getPostsPaginate));
 // get posts
 postRouter.get("/", authentication_1.isAuthentication, (0, authorization_1.isAuthorization)([enum_1.roles.USER]), (0, asyncHandler_1.asyncHandler)(postService.getPosts));
 //get specific post

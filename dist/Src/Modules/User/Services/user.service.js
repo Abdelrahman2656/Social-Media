@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.forgetPassword = exports.refreshToken = exports.activateAccount = exports.loginWithGoogle = exports.login = exports.ConfirmEmail = exports.signUp = void 0;
+exports.shareProfileWithQrCode = exports.shareProfile = exports.changePassword = exports.forgetPassword = exports.refreshToken = exports.activateAccount = exports.loginWithGoogle = exports.login = exports.ConfirmEmail = exports.signUp = void 0;
+const qrcode_1 = __importDefault(require("qrcode"));
 const Database_1 = require("../../../../Database");
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
@@ -29,7 +30,7 @@ const signUp = async (req, res, next) => {
     }
     const userCode = (0, userCode_1.generateUserCode)();
     let { secure_url, public_id } = await cloud_1.default.uploader.upload(req.file.path, {
-        folder: `Social-Media/Users/Profile/${userCode}`
+        folder: `Social-Media/Users/Profile/${userCode}`,
     });
     req.failImage = { secure_url, public_id };
     //check userExist
@@ -41,13 +42,15 @@ const signUp = async (req, res, next) => {
             return next(new AppError_1.AppError(messages_1.messages.user.alreadyExist, 400)); // Prevent duplicate accounts
         }
         if (userExist.provider == enum_1.providers.GOOGLE) {
-            return next(new AppError_1.AppError('User Already Login With Google', 400));
+            return next(new AppError_1.AppError("User Already Login With Google", 400));
         }
-        if (userExist?.otpEmail && userExist?.expiredDateOtp?.getTime() > Date.now()) {
+        if (userExist?.otpEmail &&
+            userExist?.expiredDateOtp?.getTime() > Date.now()) {
             return next(new AppError_1.AppError(messages_1.messages.user.AlreadyHasOtp, 400));
         }
         // If OTP is expired, resend a new OTP
-        if (!userExist?.expiredDateOtp || userExist.expiredDateOtp.getTime() < Date.now()) {
+        if (!userExist?.expiredDateOtp ||
+            userExist.expiredDateOtp.getTime() < Date.now()) {
             await (0, emailEvent_1.generateAndSecondSendOTP)(email, firstName, lastName); // Ensure OTP is sent
             return res.status(200).json({
                 message: "OTP expired. A new OTP has been sent.",
@@ -56,7 +59,10 @@ const signUp = async (req, res, next) => {
         }
     }
     //crypt phone
-    let cipherText = (0, encryption_1.Encrypt)({ key: phone, secretKey: process.env.SECRET_CRYPTO });
+    let cipherText = (0, encryption_1.Encrypt)({
+        key: phone,
+        secretKey: process.env.SECRET_CRYPTO,
+    });
     //create user
     const user = new Database_1.User({
         firstName,
@@ -66,7 +72,7 @@ const signUp = async (req, res, next) => {
         password,
         role,
         attachment: { secure_url, public_id },
-        userCode
+        userCode,
     });
     const userCreated = await user.save();
     if (!userCreated) {
@@ -134,16 +140,14 @@ const login = async (req, res, next) => {
     //generate token
     const accessToken = (0, token_1.generateToken)({
         payload: { email, id: userExist._id },
-        options: { expiresIn: '1d' },
+        options: { expiresIn: "1d" },
     });
     const refreshToken = (0, token_1.generateToken)({
         payload: { email, id: userExist._id },
         options: { expiresIn: "7d" },
     });
     //return response
-    return res
-        .status(200)
-        .json({
+    return res.status(200).json({
         message: messages_1.messages.user.loginSuccessfully,
         success: true,
         access_token: accessToken,
@@ -153,9 +157,9 @@ const login = async (req, res, next) => {
 exports.login = login;
 //---------------------------------------------------Login With Google --------------------------------------------------------------
 const loginWithGoogle = async (req, res, next) => {
-    //get data from req 
+    //get data from req
     let { idToken } = req.body;
-    //check token from google 
+    //check token from google
     let { email, given_name, family_name } = await (0, verifyGoogle_1.verifyGoogleToken)(idToken);
     //check user exist
     let userExist = await Database_1.User.findOne({ email });
@@ -179,9 +183,7 @@ const loginWithGoogle = async (req, res, next) => {
         options: { expiresIn: "7d" },
     });
     //return response
-    return res
-        .status(200)
-        .json({
+    return res.status(200).json({
         message: messages_1.messages.user.loginSuccessfully,
         success: true,
         access_token: accessToken,
@@ -222,7 +224,10 @@ const refreshToken = async (req, res, next) => {
     if (!result) {
         return next(new AppError_1.AppError("Invalid or expired token", 401));
     }
-    if (!result || typeof result !== "object" || !("email" in result) || !("_id" in result)) {
+    if (!result ||
+        typeof result !== "object" ||
+        !("email" in result) ||
+        !("_id" in result)) {
         return next(new AppError_1.AppError("Invalid or expired token", 401));
     }
     //generate token
@@ -283,7 +288,10 @@ const changePassword = async (req, res, next) => {
     if (userExist.expiredDateOtp.getTime() < Date.now()) {
         //generate otp
         let secondForgetPassword = String((0, otp_1.generateOTP)());
-        let hash = await (0, encryption_1.Hash)({ key: secondForgetPassword, SALT_ROUNDS: process.env.SALT_ROUNDS });
+        let hash = await (0, encryption_1.Hash)({
+            key: secondForgetPassword,
+            SALT_ROUNDS: process.env.SALT_ROUNDS,
+        });
         //add to otp
         userExist.otpEmail = hash;
         userExist.expiredDateOtp = new Date(Date.now() + 5 * 60 * 1000);
@@ -299,7 +307,67 @@ const changePassword = async (req, res, next) => {
     });
     //update in db
     await Database_1.User.updateOne({ email }, { password: hashPassword, $unset: { otpEmail: "", expiredDateOtp: "" } });
-    //send response 
-    return res.status(200).json({ success: true, message: messages_1.messages.user.updateSuccessfully });
+    //send response
+    return res
+        .status(200)
+        .json({ success: true, message: messages_1.messages.user.updateSuccessfully });
 };
 exports.changePassword = changePassword;
+//---------------------------------------------------Share Profile--------------------------------------------------------------
+const shareProfile = async (req, res, next) => {
+    //get date from param
+    const { profileId } = req.params;
+    const userId = req.authUser?._id;
+    //check user exist
+    const userExistence = await Database_1.User.findById(profileId);
+    if (!userExistence) {
+        return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
+    }
+    // find user and update
+    if (profileId === userId?.toString()) {
+        return res.status(200).json({ success: true });
+    }
+    let user = await Database_1.User.findOneAndUpdate({
+        _id: profileId,
+        isConfirmed: true,
+        isDeleted: false,
+        "viewers.userId": userId,
+    }, {
+        $inc: { "viewers.$[viewer].count": 1 },
+        $push: {
+            "viewers.$[viewer].lastViews": {
+                $each: [new Date()],
+                $slice: -5,
+            },
+        },
+    }, { new: true, arrayFilters: [{ "viewer.userId": userId }] });
+    if (!user) {
+        user = await Database_1.User.findOneAndUpdate({ _id: profileId, isDeleted: false, isConfirmed: true }, { $push: { viewers: { userId, count: 1, lastViews: [new Date()] } } }, { new: true });
+    }
+    //send response
+    return res.status(200).json({ success: true, userData: user });
+};
+exports.shareProfile = shareProfile;
+//---------------------------------------------------Share Profile with qr code--------------------------------------------------------------
+const shareProfileWithQrCode = async (req, res, next) => {
+    //get data from params
+    const { profileId } = req.params;
+    // find user
+    const user = await Database_1.User.findOne({ _id: profileId, isConfirmed: true, isDeleted: false }).select("-password -attachment.public_id ");
+    if (!user) {
+        return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
+    }
+    //link 
+    let QrCodeUrl;
+    let url = `${req.protocol}://${req.get('host')}/api/v1/user/profile-qrcode/${profileId}`;
+    try {
+        QrCodeUrl = await qrcode_1.default.toDataURL(url);
+        console.log(url);
+    }
+    catch (err) {
+        console.error(err);
+    }
+    //send response 
+    return res.status(200).json({ success: true, user, QrCodeUrl });
+};
+exports.shareProfileWithQrCode = shareProfileWithQrCode;

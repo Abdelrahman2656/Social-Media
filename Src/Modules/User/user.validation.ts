@@ -60,3 +60,11 @@ export const changePasswordVal =joi.object({
 export const loginWithGoogleVal =joi.object({
     idToken:generalFields.idToken.required()
 }).required()
+//share profile 
+export const shareProfile =joi.object({
+    profileId : generalFields.profileId.required()
+}).required()
+//share profile with qrcode
+export const shareProfileWithQrCode =joi.object({
+    profileId : generalFields.profileId.required()
+}).required()

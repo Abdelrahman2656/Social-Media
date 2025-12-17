@@ -3,9 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generalFields = void 0;
+exports.generalFields = exports.checkObjectId = void 0;
 const joi_1 = __importDefault(require("joi"));
 const enum_1 = require("../constant/enum");
+const mongoose_1 = require("mongoose");
+//anther solution to check id
+const checkObjectId = (value, helper) => {
+    return mongoose_1.Types.ObjectId.isValid(value) ? true : helper.message("Invalid ObjectID");
+};
+exports.checkObjectId = checkObjectId;
 exports.generalFields = {
     firstName: joi_1.default.string().max(15).min(3),
     lastName: joi_1.default.string().max(15).min(3),
@@ -23,6 +29,7 @@ exports.generalFields = {
     text: joi_1.default.string().max(200),
     DOB: joi_1.default.string(),
     objectId: joi_1.default.string().hex().length(24),
+    profileId: joi_1.default.string().custom(exports.checkObjectId),
     refreshToken: joi_1.default.string(),
     idToken: joi_1.default.string(),
     phone: joi_1.default

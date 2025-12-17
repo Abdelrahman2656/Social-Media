@@ -39,6 +39,7 @@ const validation_1 = require("../../Middleware/validation");
 const US = __importStar(require("./Services/user.service"));
 const VA = __importStar(require("./user.validation"));
 const Cloud_Upload_1 = require("../../Utils/Cloud-Upload");
+const authentication_1 = require("../../Middleware/authentication");
 const userRouter = (0, express_1.Router)();
 // sign up
 userRouter.post('/signup', (0, Cloud_Upload_1.cloudUpload)([...Cloud_Upload_1.fileValidation.image]).single("attachment"), (0, validation_1.isValid)(VA.signUpVal), (0, asyncHandler_1.asyncHandler)(US.signUp));
@@ -56,4 +57,8 @@ userRouter.post('/google-login', (0, validation_1.isValid)(VA.loginWithGoogleVal
 userRouter.post('/forget-password', (0, validation_1.isValid)(VA.forgetPasswordVal), (0, asyncHandler_1.asyncHandler)(US.forgetPassword));
 //change password 
 userRouter.put('/change-password', (0, validation_1.isValid)(VA.changePasswordVal), (0, asyncHandler_1.asyncHandler)(US.changePassword));
+//share Profile
+userRouter.get("/profile/:profileId", authentication_1.isAuthentication, (0, validation_1.isValid)(VA.shareProfile), (0, asyncHandler_1.asyncHandler)(US.shareProfile));
+//share Profile
+userRouter.get("/profile-qrcode/:profileId", authentication_1.isAuthentication, (0, validation_1.isValid)(VA.shareProfileWithQrCode), (0, asyncHandler_1.asyncHandler)(US.shareProfileWithQrCode));
 exports.default = userRouter;
