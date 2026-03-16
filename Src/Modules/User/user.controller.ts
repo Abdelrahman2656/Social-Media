@@ -26,4 +26,14 @@ userRouter.put('/change-password',isValid(VA.changePasswordVal),asyncHandler(US.
 userRouter.get("/profile/:profileId",isAuthentication,isValid(VA.shareProfile),asyncHandler(US.shareProfile))
 //share Profile
 userRouter.get("/profile-qrcode/:profileId",isAuthentication,isValid(VA.shareProfileWithQrCode),asyncHandler(US.shareProfileWithQrCode))
+//enable 2fa
+userRouter.post('/enable-2fa',isAuthentication ,asyncHandler(US.createTwoFactor))
+
+// verify 2fa
+userRouter.post(
+  "/verify-2fa",
+  isAuthentication,
+  
+  asyncHandler(US.verifyTwoFactor)
+)
 export default userRouter

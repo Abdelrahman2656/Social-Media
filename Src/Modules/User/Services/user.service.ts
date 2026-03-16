@@ -1,4 +1,5 @@
 import QRCode from 'qrcode';
+import speakeasy from "speakeasy";
 import { User } from "../../../../Database";
 import { AppError } from "../../../Utils/AppError/AppError";
 import cloudinary from "../../../Utils/Cloud-Upload/cloud";
@@ -150,12 +151,29 @@ export const login = async (
   next: AppNext
 ) => {
   //get data from req
-  let { email, password } = req.body;
+  let { email, password ,otp} = req.body;
   //check user existence
   const userExist = await User.findOne({ email });
   if (!userExist) {
     return next(new AppError(messages.user.notFound, 404));
   }
+  if (userExist.twoFactorEnabled) {
+
+  if (!otp) {
+    return next(new AppError("OTP Required",400))
+  }
+
+  const verified = speakeasy.totp.verify({
+    secret: userExist.twoFactorSecret,
+    encoding: "base32",
+    token: otp,
+    window:1
+  })
+
+  if (!verified) {
+    return next(new AppError("Invalid OTP",400))
+  }
+}
   //compare password
   let match = comparePassword({
     password,
@@ -179,6 +197,7 @@ export const login = async (
     success: true,
     access_token: accessToken,
     refresh_token: refreshToken,
+    
   });
 };
 //---------------------------------------------------Login With Google --------------------------------------------------------------
@@ -428,7 +447,7 @@ export const  shareProfileWithQrCode = async( req: AppRequest,
     //get data from params
     const {profileId} = req.params
     // find user
-    const user = await User.findOne({_id:profileId , isConfirmed:true , isDeleted:false}).select("-password -attachment.public_id ")
+    const user = await User.findOne({_id:profileId , isConfirmed:true , isDeleted:false}).select("-password -attachment.public_id -phone ")
     if (!user) {
       return next(new AppError(messages.user.notFound,404))
     }
@@ -445,3 +464,62 @@ try {
     //send response 
     return res.status(200).json({success :true , user ,QrCodeUrl})
   }
+//---------------------------------------------------Enable 2FA--------------------------------------------------------------
+export const createTwoFactor =async (req :AppRequest ,res:AppResponse , next:AppNext)=>{
+//get user id
+const authUser = req.authUser?._id
+//check user
+const userExist = await User.findById(authUser)
+if(!userExist){
+ return next(new AppError(messages.user.notFound , 404))
+}
+ const secret = speakeasy.generateSecret({
+    length: 20,
+    name: `SocialMedia (${userExist?.email})`
+  })
+
+  const qrCode = await QRCode.toDataURL(secret.otpauth_url!)
+  //prepare data 
+  userExist.twoFactorSecret =secret.base32
+  const createTwoFA = await userExist.save()
+  if(!createTwoFA) {
+    return next(new AppError(messages.user.FailToCreate2FA,500))
+  }
+  return res.status(200).json({success:true ,message:messages.user.CrateScan2FA , qrCode ,SecretData:createTwoFA.twoFactorSecret})
+}
+//---------------------------------------------------Verify 2FA --------------------------------------------------------------
+export const verifyTwoFactor = async (
+  req: AppRequest,
+  res: AppResponse,
+  next: AppNext
+) => {
+
+  const userId = req.authUser?._id
+  const { token } = req.body
+
+  const user = await User.findById(userId)
+
+  if (!user) {
+    return next(new AppError(messages.user.notFound,404))
+  }
+
+  const verified = speakeasy.totp.verify({
+    secret: user.twoFactorSecret,
+    encoding: "base32",
+    token,
+    window:1
+  })
+
+  if (!verified) {
+    return next(new AppError("Invalid 2FA Code",400))
+  }
+
+  user.twoFactorEnabled = true
+
+  await user.save()
+
+  return res.status(200).json({
+    success:true,
+    message:"Two Factor Authentication Enabled"
+  })
+}

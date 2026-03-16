@@ -3,12 +3,11 @@ import { providers, roles } from "../../Src/Utils/constant/enum";
 import { Hash } from "../../Src/Utils/encryption";
 
 //schema
-interface Image{
- secure_url:string,
- public_id:string
+interface Image {
+  secure_url: string;
+  public_id: string;
 }
 interface IUser {
-  
   firstName: string;
   lastName: string;
   email: string;
@@ -21,16 +20,21 @@ interface IUser {
   DOB: string;
   provider: string;
   phone: String;
-  attachment:Image[],
-  userCode:string,
- viewers: {
-  userId: mongoose.Types.ObjectId;
-  lastViews: [Date];
-  count:number
-}[];
+  attachment: Image[];
+  userCode: string;
+  viewers: {
+    userId: mongoose.Types.ObjectId;
+    lastViews: [Date];
+    count: number;
+  }[];
+  twoFactorEnabled:boolean,
+  twoFactorSecret:string,
+  otp:string
 }
 // Mongoose Document Type
-export interface UserDocument extends IUser, Document { _id: Schema.Types.ObjectId;}
+export interface UserDocument extends IUser, Document {
+  _id: Schema.Types.ObjectId;
+}
 const userSchema = new Schema<UserDocument>({
   firstName: {
     type: String,
@@ -70,30 +74,30 @@ const userSchema = new Schema<UserDocument>({
     },
     trim: true,
   },
-  attachment:{
-    secure_url:{
-      type:String,
-        validate: {
-      validator: function (this: IUser, value: string) {
-        if (this.provider === providers.SYSTEM) {
-          return !!value; 
-        }
-        return true; 
+  attachment: {
+    secure_url: {
+      type: String,
+      validate: {
+        validator: function (this: IUser, value: string) {
+          if (this.provider === providers.SYSTEM) {
+            return !!value;
+          }
+          return true;
+        },
+        message: "Image is required for SYSTEM provider",
       },
-      message: "Image is required for SYSTEM provider",
     },
-    },
-    public_id:{
-      type:String,
-        validate: {
-      validator: function (this: IUser, value: string) {
-        if (this.provider === providers.SYSTEM) {
-          return !!value; 
-        }
-        return true; 
+    public_id: {
+      type: String,
+      validate: {
+        validator: function (this: IUser, value: string) {
+          if (this.provider === providers.SYSTEM) {
+            return !!value;
+          }
+          return true;
+        },
+        message: "Image is required for SYSTEM provider",
       },
-      message: "Image is required for SYSTEM provider",
-    },
     },
   },
   phone: {
@@ -111,11 +115,11 @@ const userSchema = new Schema<UserDocument>({
     type: Boolean,
     default: false,
   },
-userCode: {
-  type: String,
-  unique: true,
-  required: true
-},
+  userCode: {
+    type: String,
+    unique: true,
+    required: true,
+  },
   isDeleted: {
     type: Boolean,
     default: false,
@@ -124,28 +128,39 @@ userCode: {
     type: String,
     default: () => new Date().toISOString(),
   },
-  viewers:[
-{
-   userId:{type:Schema.Types.ObjectId , ref:"User"},
- lastViews:[{type:Date}  ],
-  count:{type:Number , default:1},
- 
-_id:false
-}
+  twoFactorEnabled: {
+  type: Boolean,
+  default: false
+},
+
+twoFactorSecret: {
+  type: String
+},
+otp:String,
+  viewers: [
+    {
+      userId: { type: Schema.Types.ObjectId, ref: "User" },
+      lastViews: [{ type: Date }],
+      count: { type: Number, default: 1 },
+
+      _id: false,
+    },
   ],
   otpEmail: String,
   expiredDateOtp: Date,
 });
-//pre 
+//pre
 //hash Password
-userSchema.pre("save",function(next){
-// this >> doc
-if(this.isModified("password") && typeof this.password === "string"){
-this.password = Hash({key:this.password  , SALT_ROUNDS:process.env.SALT_ROUNDS})
-}
-next()
-})
-
+userSchema.pre("save", function (next) {
+  // this >> doc
+  if (this.isModified("password") && typeof this.password === "string") {
+    this.password = Hash({
+      key: this.password,
+      SALT_ROUNDS: process.env.SALT_ROUNDS,
+    });
+  }
+  next();
+});
 
 //model
 export const User = model<UserDocument>("User", userSchema);

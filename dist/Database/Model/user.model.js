@@ -87,7 +87,7 @@ const userSchema = new mongoose_1.Schema({
     userCode: {
         type: String,
         unique: true,
-        required: true
+        required: true,
     },
     isDeleted: {
         type: Boolean,
@@ -97,23 +97,34 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: () => new Date().toISOString(),
     },
+    twoFactorEnabled: {
+        type: Boolean,
+        default: false
+    },
+    twoFactorSecret: {
+        type: String
+    },
+    otp: String,
     viewers: [
         {
             userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
             lastViews: [{ type: Date }],
             count: { type: Number, default: 1 },
-            _id: false
-        }
+            _id: false,
+        },
     ],
     otpEmail: String,
     expiredDateOtp: Date,
 });
-//pre 
+//pre
 //hash Password
 userSchema.pre("save", function (next) {
     // this >> doc
     if (this.isModified("password") && typeof this.password === "string") {
-        this.password = (0, encryption_1.Hash)({ key: this.password, SALT_ROUNDS: process.env.SALT_ROUNDS });
+        this.password = (0, encryption_1.Hash)({
+            key: this.password,
+            SALT_ROUNDS: process.env.SALT_ROUNDS,
+        });
     }
     next();
 });

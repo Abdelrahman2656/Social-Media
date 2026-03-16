@@ -26,6 +26,7 @@ exports.generalFields = {
     cPassword: joi_1.default.string().valid(joi_1.default.ref("password")),
     role: joi_1.default.string().valid(...Object.values(enum_1.roles)),
     otpEmail: joi_1.default.string(),
+    otp: joi_1.default.string(),
     text: joi_1.default.string().max(200),
     DOB: joi_1.default.string(),
     objectId: joi_1.default.string().hex().length(24),

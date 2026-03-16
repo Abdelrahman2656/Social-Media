@@ -3,8 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shareProfileWithQrCode = exports.shareProfile = exports.changePassword = exports.forgetPassword = exports.refreshToken = exports.activateAccount = exports.loginWithGoogle = exports.login = exports.ConfirmEmail = exports.signUp = void 0;
+exports.verifyTwoFactor = exports.createTwoFactor = exports.shareProfileWithQrCode = exports.shareProfile = exports.changePassword = exports.forgetPassword = exports.refreshToken = exports.activateAccount = exports.loginWithGoogle = exports.login = exports.ConfirmEmail = exports.signUp = void 0;
 const qrcode_1 = __importDefault(require("qrcode"));
+const speakeasy_1 = __importDefault(require("speakeasy"));
 const Database_1 = require("../../../../Database");
 const AppError_1 = require("../../../Utils/AppError/AppError");
 const cloud_1 = __importDefault(require("../../../Utils/Cloud-Upload/cloud"));
@@ -123,11 +124,25 @@ exports.ConfirmEmail = ConfirmEmail;
 //---------------------------------------------------Login --------------------------------------------------------------
 const login = async (req, res, next) => {
     //get data from req
-    let { email, password } = req.body;
+    let { email, password, otp } = req.body;
     //check user existence
     const userExist = await Database_1.User.findOne({ email });
     if (!userExist) {
         return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
+    }
+    if (userExist.twoFactorEnabled) {
+        if (!otp) {
+            return next(new AppError_1.AppError("OTP Required", 400));
+        }
+        const verified = speakeasy_1.default.totp.verify({
+            secret: userExist.twoFactorSecret,
+            encoding: "base32",
+            token: otp,
+            window: 1
+        });
+        if (!verified) {
+            return next(new AppError_1.AppError("Invalid OTP", 400));
+        }
     }
     //compare password
     let match = (0, encryption_1.comparePassword)({
@@ -353,7 +368,7 @@ const shareProfileWithQrCode = async (req, res, next) => {
     //get data from params
     const { profileId } = req.params;
     // find user
-    const user = await Database_1.User.findOne({ _id: profileId, isConfirmed: true, isDeleted: false }).select("-password -attachment.public_id ");
+    const user = await Database_1.User.findOne({ _id: profileId, isConfirmed: true, isDeleted: false }).select("-password -attachment.public_id -phone ");
     if (!user) {
         return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
     }
@@ -371,3 +386,51 @@ const shareProfileWithQrCode = async (req, res, next) => {
     return res.status(200).json({ success: true, user, QrCodeUrl });
 };
 exports.shareProfileWithQrCode = shareProfileWithQrCode;
+//---------------------------------------------------Enable 2FA--------------------------------------------------------------
+const createTwoFactor = async (req, res, next) => {
+    //get user id
+    const authUser = req.authUser?._id;
+    //check user
+    const userExist = await Database_1.User.findById(authUser);
+    if (!userExist) {
+        return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
+    }
+    const secret = speakeasy_1.default.generateSecret({
+        length: 20,
+        name: `SocialMedia (${userExist?.email})`
+    });
+    const qrCode = await qrcode_1.default.toDataURL(secret.otpauth_url);
+    //prepare data 
+    userExist.twoFactorSecret = secret.base32;
+    const createTwoFA = await userExist.save();
+    if (!createTwoFA) {
+        return next(new AppError_1.AppError(messages_1.messages.user.FailToCreate2FA, 500));
+    }
+    return res.status(200).json({ success: true, message: messages_1.messages.user.CrateScan2FA, qrCode, SecretData: createTwoFA.twoFactorSecret });
+};
+exports.createTwoFactor = createTwoFactor;
+//---------------------------------------------------Verify 2FA --------------------------------------------------------------
+const verifyTwoFactor = async (req, res, next) => {
+    const userId = req.authUser?._id;
+    const { token } = req.body;
+    const user = await Database_1.User.findById(userId);
+    if (!user) {
+        return next(new AppError_1.AppError(messages_1.messages.user.notFound, 404));
+    }
+    const verified = speakeasy_1.default.totp.verify({
+        secret: user.twoFactorSecret,
+        encoding: "base32",
+        token,
+        window: 1
+    });
+    if (!verified) {
+        return next(new AppError_1.AppError("Invalid 2FA Code", 400));
+    }
+    user.twoFactorEnabled = true;
+    await user.save();
+    return res.status(200).json({
+        success: true,
+        message: "Two Factor Authentication Enabled"
+    });
+};
+exports.verifyTwoFactor = verifyTwoFactor;

@@ -39,6 +39,7 @@ exports.signInVal = joi_1.default.object({
     email: generalFields_1.generalFields.email.required(),
     provider: joi_1.default.string()
         .valid(enum_1.providers.SYSTEM, enum_1.providers.GOOGLE),
+    otp: generalFields_1.generalFields.otp,
     password: joi_1.default.alternatives().conditional("provider", {
         is: enum_1.providers.SYSTEM,
         then: generalFields_1.generalFields.password.required(),

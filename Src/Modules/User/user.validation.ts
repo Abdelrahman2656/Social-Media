@@ -33,12 +33,14 @@ export const signInVal = joi.object({
     email:generalFields.email.required(),
         provider: joi.string()
     .valid(providers.SYSTEM, providers.GOOGLE),
+    otp:generalFields.otp,
     password: joi.alternatives().conditional("provider", {
         is: providers.SYSTEM,
         then: generalFields.password.required(), 
         otherwise: joi.optional()}), 
        phone:generalFields.phone.optional()
     })
+    
     
 //refresh token
 export const refreshTokenVal = joi.object({

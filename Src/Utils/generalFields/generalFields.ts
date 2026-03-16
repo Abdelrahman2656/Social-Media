@@ -25,6 +25,7 @@ export const generalFields = {
   cPassword: joi.string().valid(joi.ref("password")),
   role: joi.string().valid(...Object.values(roles)),
   otpEmail: joi.string(),
+  otp: joi.string(),
   text:joi.string().max(200),
   DOB: joi.string(),
   objectId: joi.string().hex().length(24),

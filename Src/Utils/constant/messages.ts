@@ -27,7 +27,9 @@ const generateMessage = (entity :string) => ({
       login:"Congratulation Please Login",
       loginSuccessfully:"User Login Successfully",
       Incorrect:"Incorrect In Email Or Password",
-      AlreadyVerified:"You Already Verified"
+      AlreadyVerified:"You Already Verified",
+      CrateScan2FA :"Scan QR Code With Authenticator",
+      FailToCreate2FA:"Fail To Create 2FA QR Code"
     },
    post:generateMessage('Post'),
     comment:generateMessage('Comment')
