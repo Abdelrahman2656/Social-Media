@@ -1,140 +1,118 @@
-# Social Media Platform
+# 🌐 ConnectHub - Enterprise-Grade Social Intelligence API
 
-A modern, secure, and scalable social media platform built with Node.js, Express, and MongoDB. This application provides a robust backend for social networking with features like user authentication, profile management, content sharing, and real-time interactions.
+[![Node.js](https://img.shields.io/badge/Node.js-v22.13.4-43853D?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-404D59?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Postman Docs](https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white)](https://documenter.getpostman.com/view/29989813/2sB3dQwAJx)
 
-## 🚀 Features
+**ConnectHub** is a sophisticated, highly scalable social intelligence ecosystem. Engineered using **Enterprise-Grade** patterns, it provides an ultra-secure RESTful backend (API v1) for modern social platforms requiring high-availability, advanced security (2FA/OAuth), and diverse content management.
 
-- 🔐 **Secure Authentication**
-  - JWT-based authentication
-  - Google OAuth 2.0 integration
-  - Role-based access control
-  - Rate limiting and security headers
+---
 
-- 👥 **User Management**
-  - User registration and profile management
-  - Email verification
-  - Password reset functionality
-  - Profile picture uploads using Cloudinary
+## 🚀 Architectural Modules & High-Level Features
 
-- 📱 **Core Features**
-  - Create and share posts
-  - Like and comment on posts
-  - Follow/Unfollow users
-  - Real-time notifications
-  - Secure file uploads
+### 🛡️ Security & Identity Management
+ConnectHub prioritizes user data integrity through a multi-layered security stack:
+*   **Next-Gen Authentication**: Integrated **Google OAuth 2.0** and traditional **System** providers.
+*   **Dual-Layer MFA**: Support for **Two-Factor Authentication (2FA)** via TOTP (Speakeasy), providing bank-level security for account protection.
+*   **JWT Ecosystem**: Advanced Token Rotation (Access/Refresh) with highly secure encryption (`crypto-js`).
+*   **Account Hygiene**: Automatic account activation via encrypted email tokens and robust password recovery workflows.
 
-- 🛡️ **Security**
-  - XSS protection
-  - Input validation using Joi
-  - Helmet.js for securing HTTP headers
-  - Rate limiting to prevent abuse
+### 📱 Core Social Intelligence
+*   **Intelligent Content Engine**: Full CRUD lifecycle for posts and comments with support for **Archiving/Restoring** to prevent data loss.
+*   **Multi-Media Orchestration**: Native integration with **Cloudinary** for scalable storage of Images, Videos, Audio, and Documents.
+*   **Engagement Framework**: Low-latency Like/Unlike systems and hierarchical (nested) threading for sophisticated user conversations.
+*   **Identification via QR**: Seamless profile discovery and sharing through dynamically generated **QR Codes**.
 
-## 🛠️ Tech Stack
+### 💼 Administrative Governance
+Complete platform oversight built for power users:
+*   **Real-time Dashboarding**: High-level data insights through the `/admin/data` endpoint.
+*   **Granular RBAC**: Strict Role-Based Access Control (RBAC) across three privilege tiers: `user`, `admin`, and `superAdmin`.
+*   **Systemic Moderation**: Tools to manage roles and user permissions dynamically.
 
-- **Backend**: Node.js, Express
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT, Google OAuth 2.0
-- **File Storage**: Cloudinary
-- **Email**: Nodemailer
-- **Security**: Helmet, xss-clean, express-rate-limit
-- **Validation**: Joi
-- **Language**: TypeScript
+---
 
-## 🚀 Getting Started
+## 🛠️ Performance & Scalability Stack
+Designed to handle millions of interactions with precision:
+*   **Smart Pagination**: Efficient resource retrieval using `mongoose-paginate-v2` for high-performance lazy loading.
+*   **Defensive Security**: Built-in protection against common vulnerabilities:
+    *   **Rate Limiting**: To mitigate Brute-Force/DDoS.
+    *   **Security Headers**: Hardened with **Helmet**.
+    *   **Anti-XSS**: Input sanitization to neutralize malicious injection.
+*   **Global Error Orchestration**: Centralized management ensures clean API responses and prevents internal data leaks.
 
-### Prerequisites
+---
 
-- Node.js (v14 or higher)
-- MongoDB Atlas account or local MongoDB instance
-- Cloudinary account (for file storage)
-- Google OAuth 2.0 credentials
+## 📚 Interactive API Documentation
 
-### Installation
+Every endpoint is meticulously documented with detailed Request/Response schemas, error codes, and testing variables.
 
-1. Clone the repository:
-   ```bash
-   git clone [your-repository-url]
-   cd social-media
-   ```
+👉 **[Explore Full Documentation on Postman](https://documenter.getpostman.com/view/29989813/2sB3dQwAJx)**
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+---
 
-3. Create a `.env` file in the root directory and add the following environment variables:
-   ```
-   PORT=3000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-   EMAIL_USER=your_email_username
-   EMAIL_PASS=your_email_password
-   ```
+## ⚙️ Engineering Setup
 
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+### 1. Requirements
+*   Node.js v22+
+*   MongoDB Cluster (Atlas)
+*   Cloudinary Infrastructure
+*   Google Developer Console (for OAuth)
 
-## 📚 API Documentation
-
-For detailed API documentation, please refer to the [API Documentation](API_DOCS.md) file.
-
-## 🧪 Testing
-
-To run tests:
+### 2. Deployment on Locally
 ```bash
-npm test
+# Clone the repository
+git clone https://github.com/your-username/ConnectHub-API.git
+
+# Install dependencies
+npm install
+
+# Build & Run (Production)
+npm run build
+npm start
+
+# Hot Reload (Development)
+npm run dev
 ```
 
-## 🧰 Project Structure
+### 3. Environment Variables (.env)
+```env
+# Database Credentials
+DATABASE_DB=your_mongo_uri
 
+# Infrastructure
+CLOUD_NAME=cloudinary_id
+CLOUD_API=cloudinary_key
+CLOUD_SECRET=cloudinary_secret
+
+# OAuth 2.0
+CLIENT_ID=google_client_id
+CLIENT_SECRET=google_secret
+
+# Communication
+USER_SENDER=smtp_user
+PASS_EMAIL=smtp_pass (app_password)
 ```
-social-media/
-├── dist/                 # Compiled TypeScript files
-├── node_modules/         # Dependencies
-├── src/                  # Source code
-│   ├── controllers/      # Route controllers
-│   ├── models/           # Database models
-│   ├── routes/           # API routes
-│   ├── middleware/       # Custom middleware
-│   ├── utils/            # Utility functions
-│   └── types/            # TypeScript type definitions
-├── .env                 # Environment variables
-├── .gitignore           # Git ignore file
-├── package.json         # Project metadata and dependencies
-├── tsconfig.json        # TypeScript configuration
-└── README.md            # Project documentation
+
+---
+
+## 📁 Repository Structure
+```text
+/
+├── Src/              # Core Source Code
+│   ├── Modules/      # Feature-First Architecture
+│   ├── Middleware/   # Auth, Validation, Global Error Handling
+│   ├── Utils/        # External Cloud Tools (Cloudinary, QR)
+│   └── bootstrap.ts  # Application Orchestrator
+├── Database/         # Mongoose Schema & Engine Configs
+├── package.json      # Dependencies (Hashed/Verified)
+└── vercel.json       # Deployment Configuration
 ```
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Express.js](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [Mongoose](https://mongoosejs.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [JWT](https://jwt.io/)
-- [Cloudinary](https://cloudinary.com/)
-
-## 📧 Contact
-
-For any inquiries, please contact [Your Email] or open an issue on the repository.
+## 🔗 Author & Maintenance
+Developed and maintained by **[Abdelrahman](https://github.com/Abdelrahman2656)**.
+Built to empower the next generation of social connectivity.
