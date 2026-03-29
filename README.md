@@ -11,6 +11,48 @@
 
 ---
 
+## 🏗️ Architecture
+
+The project follows a **Modular Design Pattern**, ensuring scalability and a clean separation of concerns.
+
+```mermaid
+graph TD
+    Entry[index.ts] --> Boot[bootstrap.ts]
+    Boot --> Mod[Modules Container]
+    
+    Mod --> UserM[Users Module]
+    Mod --> PostM[Posts Module]
+    Mod --> CommM[Comments Module]
+    
+    UserM --> UR[Route]
+    UserM --> UC[Controller]
+    UserM --> UM[Model]
+    
+    PostM --> PR[Route]
+    PostM --> PC[Controller]
+    PostM --> PM[Model]
+    
+    CommM --> CR[Route]
+    CommM --> CC[Controller]
+    CommM --> CM[Model]
+    
+    DB[(MongoDB Database)]
+    
+    UM --- DB
+    PM --- DB
+    CM --- DB
+    
+    style Entry fill:#1f1f1f,stroke:#fff,color:#fff
+    style Boot fill:#1f1f1f,stroke:#fff,color:#fff
+    style Mod fill:#333,stroke:#fff,color:#fff
+    style UserM fill:#222,stroke:#fff,color:#fff
+    style PostM fill:#222,stroke:#fff,color:#fff
+    style CommM fill:#222,stroke:#fff,color:#fff
+    style DB fill:#001529,stroke:#1890ff,color:#fff
+```
+
+---
+
 ## 🚀 Architectural Modules & High-Level Features
 
 ### 🛡️ Security & Identity Management
